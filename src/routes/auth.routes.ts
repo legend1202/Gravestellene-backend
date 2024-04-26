@@ -1,9 +1,9 @@
 import express from "express";
-import { get } from "../controllers/gravestone.controller";
+import { create } from "../controllers/auth.controller";
 import { errorWrap } from "../utils/error.utils";
 
 const router = express.Router();
 
-router.get("/:gravestoneName", errorWrap(get, "Could not get gravestones"));
+router.post("/register", errorWrap(create, "Could not create user"));
 
 export default router;

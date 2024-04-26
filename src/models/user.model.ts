@@ -14,7 +14,7 @@ export interface User extends Document {
     website: string;
     birthday: string;
     password: string;
-    role: "ADMIN" | "FELLESRAAD" | "COMPANY" | "CLIENT";
+    role?: "ADMIN" | "FELLESRAAD" | "COMPANY" | "CLIENT";
     bio: string;
     createdAt: Date;
     updateAt: Date;
