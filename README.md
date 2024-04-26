@@ -1,8 +1,10 @@
-# Backend Rest API
+# Gravestellene Backend Rest API
 
-## Run the project
+### Run the project
 
 ```
 npm install
+```
+```
 npm start
 ```
