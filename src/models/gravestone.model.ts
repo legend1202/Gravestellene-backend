@@ -3,13 +3,17 @@ import { v4 as uuidv4 } from "uuid";
 
 export interface Gravestone extends Document {
   id: string;
-  fellesraadId: string;
+  graveyardId: string;
   name: string;
-  location: string;
-  picture?: string;
-  content?: string;
-  newsLink?: string;
-  forecastLink?: string;
+  gender: string;
+  birthday: string;
+  deceasedDate: string;
+  buriedDate: string;
+  quarter: string;
+  graveSite: string;
+  homeTown: string;
+  graveSiteNumber: string;
+  approved: boolean;
   createdAt: Date;
   updateAt: Date;
 }
@@ -20,19 +24,23 @@ const GravestoneSchema = new Schema<Gravestone>({
     default: uuidv4,
     required: true,
     unique: true,
-  },
-  fellesraadId: {
+  },  
+  graveyardId:{
     type: String,
-    default: uuidv4,
+    ref: "Graveyard", 
     required: true,
-    unique: true,
+    unique: true,   
   },
-  name: { type: String, unique: true, sparse: true },
-  location: { type: String, required: true, unique: true },
-  picture: { type: String },
-  content: { type: String },
-  newsLink: { type: String },
-  forecastLink: { type: String }
+  name: { type: String },
+  gender: { type: String},
+  birthday: { type: String },
+  deceasedDate: { type: String },
+  buriedDate: { type: String },
+  quarter: { type: String },
+  graveSite: { type: String },
+  homeTown: { type: String },
+  graveSiteNumber: { type: String },
+  approved: { type: Boolean }
 }, {
   timestamps: true,
 });
