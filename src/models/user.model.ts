@@ -37,7 +37,7 @@ const UserSchema = new Schema<User>({
     phone: { type: String },
     website: { type: String },
     birthday: { type: String },
-    password: { type: String },
+    password: { type: String, required: true },
     role: {
         type: String
     },

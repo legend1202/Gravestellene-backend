@@ -1,6 +1,6 @@
 import jwt, { JwtPayload } from 'jsonwebtoken';
 import { Request, Response, NextFunction } from 'express';
-import { RequestError } from '../utils/globalErrorHandler';
+import { AuthenticationError, RequestError } from '../utils/globalErrorHandler';
 
 interface DecodedToken extends JwtPayload {
     userId: string;
@@ -9,7 +9,7 @@ interface DecodedToken extends JwtPayload {
 const verifyToken = (req: Request & { userId?: DecodedToken['userId'] }, res: Response, next: NextFunction): void => {
     const token = req.header('Authorization');
     if (!token) {
-        throw new RequestError("Access denied", 401);
+        return next(new AuthenticationError('Missing Authorization Header'));
     }  
 
     try {
@@ -18,7 +18,7 @@ const verifyToken = (req: Request & { userId?: DecodedToken['userId'] }, res: Re
         req.userId = decoded.userId;
         next();
     } catch (error) {
-        res.status(401).json({ error: 'Invalid token' });
+        next(new AuthenticationError('Invalid Token'));
     }
 };
 
