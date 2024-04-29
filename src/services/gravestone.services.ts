@@ -37,7 +37,6 @@ export const handleGravestoneCreation = async (
     graveSite,
     homeTown,
     graveSiteNumber,
-    approved,
   } = gravestone;
 
   if (!graveyardId) throw new RequestError('Invalid fields. graveyardId', 400);
