@@ -1,31 +1,32 @@
-import bcrypt from "bcrypt";
-import jwt from "jsonwebtoken";
-import { Document } from "mongoose";
+import bcrypt from 'bcrypt';
+import jwt from 'jsonwebtoken';
+import { Document } from 'mongoose';
 import {
   ClientSession,
   FilterQuery,
   ProjectionType,
   QueryOptions,
   UpdateQuery,
-} from "mongoose";
-import { RequestError, AuthenticationError } from "../utils/globalErrorHandler";
-import { User, UserModel } from "../models/user.model";
+} from 'mongoose';
+import { RequestError, AuthenticationError } from '../utils/globalErrorHandler';
+import { User, UserModel } from '../models/user.model';
+import { Roles } from '../utils/constants';
 
 export const handleUserCreation = async (
   user: Partial<User> & Document,
-  session?: ClientSession,
+  session?: ClientSession
 ): Promise<User> => {
   const { email, password } = user;
 
-  if (!email) throw new RequestError("Invalid fields", 400);
-  if (!password) throw new RequestError("Password must not be empty", 400);
+  if (!email) throw new RequestError('Invalid fields', 400);
+  if (!password) throw new RequestError('Password must not be empty', 400);
 
   const existingUser = await findOneUser({ email });
 
   if (existingUser) {
     throw new RequestError(
       `Can't register this user. this email used by someone.`,
-      500,
+      500
     );
   }
 
@@ -38,12 +39,12 @@ export const handleUserCreation = async (
 
 export const handleUserLogin = async (
   user: Partial<User> & Document,
-  session?: ClientSession,
+  session?: ClientSession
 ): Promise<String> => {
   const { email, password } = user;
 
-  if (!email) throw new RequestError("Invalid fields", 400);
-  if (!password) throw new RequestError("Password must not be empty", 400);
+  if (!email) throw new RequestError('Invalid fields', 400);
+  if (!password) throw new RequestError('Password must not be empty', 400);
 
   const existingUser = await findOneUser({ email });
   if (existingUser) {
@@ -52,13 +53,10 @@ export const handleUserLogin = async (
       throw new AuthenticationError(`Password didn't match.`);
     }
 
-    if (
-      existingUser?.role &&
-      ["ADMIN", "FELLESRAAD", "COMPANY", "CLIENT"].includes(existingUser?.role)
-    ) {
-      const secretKey: string = process.env.JWT_SECRET_KEY || "";
+    if (existingUser?.role && Roles.includes(existingUser?.role)) {
+      const secretKey: string = process.env.JWT_SECRET_KEY || '';
       const token = jwt.sign({ userId: existingUser.id }, secretKey, {
-        expiresIn: "1h",
+        expiresIn: '1h',
       });
       return token;
     } else {
@@ -71,16 +69,16 @@ export const handleUserLogin = async (
 
 export const handleAssignRole = async (
   user: Partial<User> & Document,
-  session?: ClientSession,
+  session?: ClientSession
 ): Promise<User> => {
   const { id, role } = user;
 
-  if (!id) throw new RequestError("User Id must not be empty", 400);
-  if (!role) throw new RequestError("Role must not be empty", 400);
-  if (!["ADMIN", "FELLESRAAD", "COMPANY", "CLIENT"].includes(role)) {
+  if (!id) throw new RequestError('User Id must not be empty', 400);
+  if (!role) throw new RequestError('Role must not be empty', 400);
+  if (!Roles.includes(role)) {
     throw new RequestError(
       `User Role must not be include one of "ADMIN", "FELLESRAAD", "COMPANY", "CLIENT".`,
-      400,
+      400
     );
   }
 
@@ -98,7 +96,7 @@ export const handleAssignRole = async (
 export async function findOneUser(
   filter?: FilterQuery<User>,
   projection?: ProjectionType<User>,
-  options?: QueryOptions<User>,
+  options?: QueryOptions<User>
 ): Promise<User | null> {
   return await UserModel.findOne(filter, projection, options);
 }
@@ -106,7 +104,7 @@ export async function findOneUser(
 export const createNewUser = async (
   email: string,
   password: string,
-  session?: ClientSession,
+  session?: ClientSession
 ): Promise<User> => {
   const newUser = new UserModel({
     email,
@@ -120,7 +118,7 @@ export const createNewUser = async (
 export const findByIdAndUpdateUserDocument = async (
   id: string,
   update: UpdateQuery<User>,
-  options?: QueryOptions<User>,
+  options?: QueryOptions<User>
 ) => {
   return await UserModel.findOneAndUpdate({ id }, update, options);
 };
