@@ -1,5 +1,5 @@
 import express from "express";
-import authRoutes from "./auth.routes"
+import authRoutes from "./auth.routes";
 import gravestoneRoutes from "./gravestone.routes";
 import { sendResponse } from "../utils/response.utils";
 

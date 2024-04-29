@@ -18,31 +18,37 @@ export interface Gravestone extends Document {
   updateAt: Date;
 }
 
-const GravestoneSchema = new Schema<Gravestone>({
-  id: {
-    type: String,
-    default: uuidv4,
-    required: true,
-    unique: true,
-  },  
-  graveyardId:{
-    type: String,
-    ref: "Graveyard", 
-    required: true,
-    unique: true,   
+const GravestoneSchema = new Schema<Gravestone>(
+  {
+    id: {
+      type: String,
+      default: uuidv4,
+      required: true,
+      unique: true,
+    },
+    graveyardId: {
+      type: String,
+      ref: "Graveyard",
+      required: true,
+      unique: true,
+    },
+    name: { type: String },
+    gender: { type: String },
+    birthday: { type: String },
+    deceasedDate: { type: String },
+    buriedDate: { type: String },
+    quarter: { type: String },
+    graveSite: { type: String },
+    homeTown: { type: String },
+    graveSiteNumber: { type: String },
+    approved: { type: Boolean },
   },
-  name: { type: String },
-  gender: { type: String},
-  birthday: { type: String },
-  deceasedDate: { type: String },
-  buriedDate: { type: String },
-  quarter: { type: String },
-  graveSite: { type: String },
-  homeTown: { type: String },
-  graveSiteNumber: { type: String },
-  approved: { type: Boolean }
-}, {
-  timestamps: true,
-});
+  {
+    timestamps: true,
+  },
+);
 
-export const GravestoneModel = model<Gravestone>("Gravestone", GravestoneSchema);
+export const GravestoneModel = model<Gravestone>(
+  "Gravestone",
+  GravestoneSchema,
+);

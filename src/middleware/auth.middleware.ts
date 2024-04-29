@@ -1,25 +1,29 @@
-import jwt, { JwtPayload } from 'jsonwebtoken';
-import { Request, Response, NextFunction } from 'express';
-import { AuthenticationError, RequestError } from '../utils/globalErrorHandler';
+import jwt, { JwtPayload } from "jsonwebtoken";
+import { Request, Response, NextFunction } from "express";
+import { AuthenticationError, RequestError } from "../utils/globalErrorHandler";
 
 interface DecodedToken extends JwtPayload {
-    userId: string;
+  userId: string;
 }
 
-const verifyToken = (req: Request & { userId?: DecodedToken['userId'] }, res: Response, next: NextFunction): void => {
-    const token = req.header('Authorization');
-    if (!token) {
-        return next(new AuthenticationError('Missing Authorization Header'));
-    }  
+const verifyToken = (
+  req: Request & { userId?: DecodedToken["userId"] },
+  res: Response,
+  next: NextFunction,
+): void => {
+  const token = req.header("Authorization");
+  if (!token) {
+    return next(new AuthenticationError("Missing Authorization Header"));
+  }
 
-    try {
-        const secretKey: string = process.env.JWT_SECRET_KEY || '';
-        const decoded = jwt.verify(token, secretKey) as DecodedToken;
-        req.userId = decoded.userId;
-        next();
-    } catch (error) {
-        next(new AuthenticationError('Invalid Token'));
-    }
+  try {
+    const secretKey: string = process.env.JWT_SECRET_KEY || "";
+    const decoded = jwt.verify(token, secretKey) as DecodedToken;
+    req.userId = decoded.userId;
+    next();
+  } catch (error) {
+    next(new AuthenticationError("Invalid Token"));
+  }
 };
 
 export default verifyToken;

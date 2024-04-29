@@ -11,47 +11,47 @@ const port = process.env.PORT;
 const MONGODB_URI = process.env.MONGODB_URI;
 
 if (!MONGODB_URI) {
-    throw new Error(
-        "No mongo connection string. Set MONGODB_URI environment variable."
-    );
+  throw new Error(
+    "No mongo connection string. Set MONGODB_URI environment variable.",
+  );
 }
 
 const initMongo = async () => {
-    try {
-        mongoose.set("strictQuery", true);
-        await mongoose.connect(MONGODB_URI);
-        console.log("Connected to DB");
-    } catch (error) {
-        console.log(`Could not connect to DB: ${error}`);
-    }
+  try {
+    mongoose.set("strictQuery", true);
+    await mongoose.connect(MONGODB_URI);
+    console.log("Connected to DB");
+  } catch (error) {
+    console.log(`Could not connect to DB: ${error}`);
+  }
 };
 
 const initServer = async () => {
-    try {
-      await initMongo();
-      app.use(express.json());
-      app.use(
-        cors({
-          origin: "*",
-          exposedHeaders: "location",
-        })
-      );
-      app.use(routes);
-      app.use(handleGlobalError);
-  
-      const server = app.listen(port, () => {
-        console.log(`⚡️[server]: Server is running at http://localhost:${port}`);
-      });
-  
-      process.on("SIGTERM", () => {
-        console.debug("SIGTERM signal received: closing HTTP server");
-        server.close(() => {
-          console.debug("HTTP server closed");
-        });
-      });  
-    } catch (error) {
-      console.log(`Could not start server: ${error}`);
-    }
-  };
+  try {
+    await initMongo();
+    app.use(express.json());
+    app.use(
+      cors({
+        origin: "*",
+        exposedHeaders: "location",
+      }),
+    );
+    app.use(routes);
+    app.use(handleGlobalError);
 
-  initServer();
+    const server = app.listen(port, () => {
+      console.log(`⚡️[server]: Server is running at http://localhost:${port}`);
+    });
+
+    process.on("SIGTERM", () => {
+      console.debug("SIGTERM signal received: closing HTTP server");
+      server.close(() => {
+        console.debug("HTTP server closed");
+      });
+    });
+  } catch (error) {
+    console.log(`Could not start server: ${error}`);
+  }
+};
+
+initServer();

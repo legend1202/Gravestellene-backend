@@ -8,18 +8,14 @@ const router = express.Router();
 
 router.post("/register", errorWrap(create, "Could not create user"));
 router.post(
-    "/login",
-    withTransaction(
-        errorWrap(login, "Could not login user")
-    )
+  "/login",
+  withTransaction(errorWrap(login, "Could not login user")),
 );
 
 router.post(
-    "/assign-role",
-    errorWrap(verifyToken, "Could not verify JWT token"),
-    withTransaction(
-        errorWrap(assignRole, "Could not assign user role")
-    )
+  "/assign-role",
+  errorWrap(verifyToken, "Could not verify JWT token"),
+  withTransaction(errorWrap(assignRole, "Could not assign user role")),
 );
 
 export default router;

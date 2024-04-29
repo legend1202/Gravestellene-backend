@@ -5,5 +5,6 @@ import { errorWrap } from "../utils/error.utils";
 const router = express.Router();
 
 router.get("/:gravestoneName", errorWrap(get, "Could not get gravestones"));
+router.get("/create", errorWrap(get, "Could not get gravestones"));
 
 export default router;

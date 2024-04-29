@@ -3,8 +3,23 @@
 ### Run the project
 
 ```
-npm install
+yarn install
 ```
+
 ```
-npm start
+yarn start
+```
+
+### Run Prettier
+
+```
+yarn run prettier
+```
+
+### Generate hex code for JWT
+
+```
+  const secretKey = crypto.randomBytes(64).toString("hex");
+
+  console.log(secretKey);
 ```

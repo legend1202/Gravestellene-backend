@@ -9,7 +9,7 @@ export class RequestError extends Error {
   constructor(message: string, statusCode = 500) {
     super(message);
     this.statusCode = statusCode;
-    this.name = 'RequestError';
+    this.name = "RequestError";
   }
 }
 
@@ -41,7 +41,7 @@ export const handleGlobalError = (
   err: Error,
   req: Request,
   res: Response,
-  next: NextFunction
+  next: NextFunction,
 ) => {
   console.error(err.stack);
 
@@ -52,14 +52,14 @@ export const handleGlobalError = (
   if (err instanceof TransactionError) {
     return res.status(500).json({
       message: "There was a problem with the database transaction",
-      error: err.message
+      error: err.message,
     });
   }
 
   if (err instanceof MongoError) {
     status = 400;
     message = "A database error occurred";
-    code = err.code; 
+    code = err.code;
   }
 
   if (err instanceof RequestError) {
@@ -68,10 +68,9 @@ export const handleGlobalError = (
   }
 
   res.status(status).send({
-    status: 'error',
+    status: "error",
     message: message,
-    code: code,     
-    stack: process.env.DEPLOY_ENV === "development" ? err.stack : undefined
+    code: code,
+    stack: process.env.DEPLOY_ENV === "development" ? err.stack : undefined,
   });
 };
-

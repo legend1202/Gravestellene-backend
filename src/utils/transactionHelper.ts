@@ -3,7 +3,7 @@ import mongoose from "mongoose";
 import { TransactionError } from "./globalErrorHandler";
 
 export const withTransaction = (
-  handler: (req: Request, res: Response, next: NextFunction) => Promise<void>
+  handler: (req: Request, res: Response, next: NextFunction) => Promise<void>,
 ) => {
   return async (req: Request, res: Response, next: NextFunction) => {
     const session = await mongoose.startSession();
@@ -17,10 +17,10 @@ export const withTransaction = (
       if (error instanceof Error) {
         next(new TransactionError(error.message));
       } else {
-        next(new TransactionError('An unknown transaction error occurred'));
+        next(new TransactionError("An unknown transaction error occurred"));
       }
     } finally {
       await session.endSession();
     }
   };
-}
+};

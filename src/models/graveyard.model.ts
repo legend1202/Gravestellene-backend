@@ -14,27 +14,30 @@ export interface Graveyard extends Document {
   updateAt: Date;
 }
 
-const GraveyardSchema = new Schema<Graveyard>({
-  id: {
-    type: String,
-    default: uuidv4,
-    required: true,
-    unique: true,
-  },   
-  fellesraadId: {
-    type: String,
-    ref:"User",
-    required: true,
-    unique: true,
+const GraveyardSchema = new Schema<Graveyard>(
+  {
+    id: {
+      type: String,
+      default: uuidv4,
+      required: true,
+      unique: true,
+    },
+    fellesraadId: {
+      type: String,
+      ref: "User",
+      required: true,
+      unique: true,
+    },
+    name: { type: String },
+    location: { type: String },
+    picture: { type: String },
+    content: { type: String },
+    newsLink: { type: String },
+    forecastLink: { type: String },
   },
-  name: { type: String },
-  location: { type: String },
-  picture: { type: String },
-  content: { type: String },
-  newsLink: { type: String },
-  forecastLink: { type: String }
-}, {
-  timestamps: true,
-});
+  {
+    timestamps: true,
+  },
+);
 
 export const GraveyardModel = model<Graveyard>("Graveyard", GraveyardSchema);
