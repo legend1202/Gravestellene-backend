@@ -1,7 +1,7 @@
 import bcrypt from 'bcrypt';
 import jwt from 'jsonwebtoken';
 import { Document } from 'mongoose';
-import { ClientSession, FilterQuery, ProjectionType, QueryOptions } from "mongoose";
+import { ClientSession, FilterQuery, ProjectionType, QueryOptions, UpdateQuery } from "mongoose";
 import { RequestError, AuthenticationError } from "../utils/globalErrorHandler";
 import { User, UserModel } from "../models/user.model";
 
@@ -34,30 +34,56 @@ export const handleUserLogin = async (user: Partial<User> & Document, session?: 
     if (!password) throw new RequestError("Password must not be empty", 400);
 
     const existingUser = await findOneUser({ email });
-
-    if (existingUser?.role && ["ADMIN", "FELLESRAAD", "COMPANY", "CLIENT"].includes(existingUser?.role)) {
-        const passwordMatch = await bcrypt.compare(password, existingUser?.password);
-
+    if (existingUser) {
+        const passwordMatch = await bcrypt.compare(password, existingUser.password);
         if (!passwordMatch) {
             throw new AuthenticationError(
                 `Password didn't match.`,
-               
             );
+        }
 
-        } else {            
+        if (existingUser?.role && ["ADMIN", "FELLESRAAD", "COMPANY", "CLIENT"].includes(existingUser?.role)) {
             const secretKey: string = process.env.JWT_SECRET_KEY || '';
             const token = jwt.sign({ userId: existingUser.id }, secretKey, {
                 expiresIn: '1h',
             });
             return token
+        } else {
+            throw new AuthenticationError(
+                `You didn't approved by admin.`,
+            );
         }
-
     } else {
         throw new AuthenticationError(
-            `You didn't approved by admin.`,
+            `Authentication error.`
         );
     }
+};
 
+export const handleAssignRole = async (user: Partial<User> & Document, session?: ClientSession): Promise<User> => {
+    const { id, role } = user;
+
+    if (!id) throw new RequestError("User Id must not be empty", 400);
+    if (!role) throw new RequestError("Role must not be empty", 400);
+    if(!["ADMIN", "FELLESRAAD", "COMPANY", "CLIENT"].includes(role)){
+        throw new RequestError(`User Role must not be include one of "ADMIN", "FELLESRAAD", "COMPANY", "CLIENT".`, 400);
+    }
+
+    const updatedUser = await findByIdAndUpdateUserDocument(
+        id,
+        {
+            role: role,
+        },
+    );
+
+    if (updatedUser) {
+        return updatedUser;
+    } else {
+        throw new RequestError(
+            `There is not ${id} user.`,
+            500
+        );
+    }    
 };
 
 export async function findOneUser(
@@ -81,4 +107,13 @@ export const createNewUser = async (
 
     await newUser.save({ session });
     return newUser;
+};
+
+
+export const findByIdAndUpdateUserDocument = async (
+    id: string,
+    update: UpdateQuery<User>,
+    options?: QueryOptions<User>
+) => {
+    return await UserModel.findOneAndUpdate({id}, update, options);
 };
