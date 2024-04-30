@@ -1,11 +1,13 @@
-import { Request, Response } from 'express';
 import mongoose, { ClientSession } from 'mongoose';
+import { Request, Response } from 'express';
 import { sendResponse } from '../utils/response.utils';
 import { RequestError } from '../utils/globalErrorHandler';
 import {
   getGravestonesByAdvancedSearch,
   handleGravestoneCreation,
+  setApprove,
 } from '../services/gravestone.services';
+import { DecodedToken } from '../types/req.type';
 
 export const get = async (req: Request, res: Response) => {
   const {
@@ -33,8 +35,6 @@ export const get = async (req: Request, res: Response) => {
     session
   );
 
-  // if (!gravestones) throw new RequestError('Gravestone does not exist', 404);
-
   return sendResponse(res, 200, 'Get Gravestones', gravestones);
 };
 
@@ -46,4 +46,19 @@ export const create = async (req: Request, res: Response) => {
   const newGravestone = await handleGravestoneCreation(gravestone);
 
   return sendResponse(res, 200, 'Created Gravestone', newGravestone);
+};
+
+export const approve = async (
+  req: Request & { userId?: DecodedToken['userId'] },
+  res: Response
+) => {
+  const { gravestone } = req.body;
+
+  const userId = req.userId;
+
+  const session: ClientSession = req.session!;
+
+  const newGravestone = await setApprove(gravestone);
+
+  return sendResponse(res, 200, 'Gravestone approved', newGravestone);
 };

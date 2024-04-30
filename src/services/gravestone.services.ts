@@ -3,6 +3,7 @@ import {
   FilterQuery,
   ProjectionType,
   QueryOptions,
+  UpdateQuery,
 } from 'mongoose';
 import { GravestoneModel, Gravestone } from '../models/gravestone.model';
 import { RequestError } from '../utils/globalErrorHandler';
@@ -126,6 +127,25 @@ export const handleGravestoneCreation = async (
   return newGravestone;
 };
 
+export const setApprove = async (
+  gravestone: Partial<Gravestone> & Document,
+  session?: ClientSession
+): Promise<Gravestone> => {
+  const { id, approved } = gravestone;
+
+  if (!id) throw new RequestError('User Id must not be empty', 400);
+
+  const updatedGravestone = await findByIdAndUpdateGravestoneDocument(id, {
+    approved,
+  });
+
+  if (updatedGravestone) {
+    return updatedGravestone;
+  } else {
+    throw new RequestError(`There is not ${id} gravestone.`, 500);
+  }
+};
+
 export async function findOneGravestone(
   filter?: FilterQuery<Gravestone>,
   projection?: ProjectionType<Gravestone>,
@@ -163,4 +183,12 @@ export const createNewGravestone = async (
 
   await newGravestone.save({ session });
   return newGravestone;
+};
+
+export const findByIdAndUpdateGravestoneDocument = async (
+  id: string,
+  update: UpdateQuery<Gravestone>,
+  options?: QueryOptions<Gravestone>
+) => {
+  return await GravestoneModel.findOneAndUpdate({ id }, update, options);
 };

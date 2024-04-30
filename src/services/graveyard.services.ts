@@ -3,6 +3,7 @@ import {
   FilterQuery,
   ProjectionType,
   QueryOptions,
+  UpdateQuery,
 } from 'mongoose';
 import { Graveyard, GraveyardModel } from '../models/graveyard.model';
 import { RequestError } from '../utils/globalErrorHandler';
@@ -81,4 +82,31 @@ export const createNewGraveyard = async (
 
   await newGraveyard.save({ session });
   return newGraveyard;
+};
+
+export const setApprove = async (
+  graveyard: Partial<Graveyard> & Document,
+  session?: ClientSession
+): Promise<Graveyard> => {
+  const { id, approved } = graveyard;
+
+  if (!id) throw new RequestError('User Id must not be empty', 400);
+
+  const updatedGraveyard = await findByIdAndUpdateGraveyardDocument(id, {
+    approved,
+  });
+
+  if (updatedGraveyard) {
+    return updatedGraveyard;
+  } else {
+    throw new RequestError(`There is not ${id} graveyard.`, 500);
+  }
+};
+
+export const findByIdAndUpdateGraveyardDocument = async (
+  id: string,
+  update: UpdateQuery<Graveyard>,
+  options?: QueryOptions<Graveyard>
+) => {
+  return await GraveyardModel.findOneAndUpdate({ id }, update, options);
 };
