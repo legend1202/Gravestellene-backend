@@ -1,9 +1,9 @@
-import { NextFunction, Request, Response } from "express";
-import { RequestError } from "./globalErrorHandler";
+import { NextFunction, Request, Response } from 'express';
+import { RequestError } from './globalErrorHandler';
 
 export function errorWrap(
   fn: (req: Request, res: Response, next: NextFunction) => Promise<any> | void,
-  contextMessage: string,
+  contextMessage: string
 ) {
   return async (req: Request, res: Response, next: NextFunction) => {
     try {

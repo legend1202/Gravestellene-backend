@@ -1,5 +1,5 @@
-import { Document, model, Schema } from "mongoose";
-import { v4 as uuidv4 } from "uuid";
+import { Document, model, Schema } from 'mongoose';
+import { v4 as uuidv4 } from 'uuid';
 
 export interface Services extends Document {
   id: string;
@@ -22,13 +22,13 @@ const ServicesSchema = new Schema<Services>(
     },
     graveyardId: {
       type: String,
-      ref: "Graveyard",
+      ref: 'Graveyard',
       required: true,
       unique: true,
     },
     companyId: {
       type: String,
-      ref: "User",
+      ref: 'User',
       required: true,
       unique: true,
     },
@@ -38,7 +38,7 @@ const ServicesSchema = new Schema<Services>(
   },
   {
     timestamps: true,
-  },
+  }
 );
 
-export const ServicesModel = model<Services>("Services", ServicesSchema);
+export const ServicesModel = model<Services>('Services', ServicesSchema);

@@ -19,7 +19,8 @@ yarn run prettier
 ### Generate hex code for JWT
 
 ```
-  const secretKey = crypto.randomBytes(64).toString("hex");
+  import crypto from 'crypto';
 
+  const secretKey = crypto.randomBytes(64).toString("hex");
   console.log(secretKey);
 ```

@@ -1,5 +1,5 @@
-import { Document, model, Schema } from "mongoose";
-import { v4 as uuidv4 } from "uuid";
+import { Document, model, Schema } from 'mongoose';
+import { v4 as uuidv4 } from 'uuid';
 
 export interface Order extends Document {
   id: string;
@@ -21,35 +21,35 @@ const OrderSchema = new Schema<Order>(
     },
     gravestoneId: {
       type: String,
-      ref: "Graveyard",
+      ref: 'Graveyard',
       required: true,
       unique: true,
     },
     userId: {
       type: String,
-      ref: "User",
+      ref: 'User',
       required: true,
       unique: true,
     },
     servicesList: [
       {
         type: String,
-        ref: "Services",
+        ref: 'Services',
       },
     ],
     ssn: { type: String },
   },
   {
     timestamps: true,
-  },
+  }
 );
 
-OrderSchema.virtual("serviceObjects", {
-  ref: "Services",
-  localField: "servicesList",
-  foreignField: "id",
+OrderSchema.virtual('serviceObjects', {
+  ref: 'Services',
+  localField: 'servicesList',
+  foreignField: 'id',
   justOne: false,
   options: { sort: { name: 1 }, limit: 100 },
 });
 
-export const OrderModel = model<Order>("Order", OrderSchema);
+export const OrderModel = model<Order>('Order', OrderSchema);

@@ -1,12 +1,12 @@
-import { Document, model, Schema } from "mongoose";
-import { v4 as uuidv4 } from "uuid";
+import { Document, model, Schema } from 'mongoose';
+import { v4 as uuidv4 } from 'uuid';
 
 export interface Graveyard extends Document {
   id: string;
   fellesraadId: string;
   name: string;
   location: string;
-  picture?: string;
+  picture?: string[];
   content?: string;
   newsLink?: string;
   forecastLink?: string;
@@ -24,20 +24,21 @@ const GraveyardSchema = new Schema<Graveyard>(
     },
     fellesraadId: {
       type: String,
-      ref: "User",
-      required: true,
-      unique: true,
     },
     name: { type: String },
     location: { type: String },
-    picture: { type: String },
+    picture: [
+      {
+        type: String,
+      },
+    ],
     content: { type: String },
     newsLink: { type: String },
     forecastLink: { type: String },
   },
   {
     timestamps: true,
-  },
+  }
 );
 
-export const GraveyardModel = model<Graveyard>("Graveyard", GraveyardSchema);
+export const GraveyardModel = model<Graveyard>('Graveyard', GraveyardSchema);

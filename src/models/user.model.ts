@@ -1,5 +1,5 @@
-import { Document, model, Schema } from "mongoose";
-import { v4 as uuidv4 } from "uuid";
+import { Document, model, Schema } from 'mongoose';
+import { v4 as uuidv4 } from 'uuid';
 
 export interface User extends Document {
   id: string;
@@ -14,7 +14,7 @@ export interface User extends Document {
   website: string;
   birthday: string;
   password: string;
-  role?: "ADMIN" | "FELLESRAAD" | "COMPANY" | "CLIENT";
+  role?: 'ADMIN' | 'FELLESRAAD' | 'COMPANY' | 'CLIENT';
   bio: string;
   createdAt: Date;
   updateAt: Date;
@@ -46,7 +46,7 @@ const UserSchema = new Schema<User>(
   },
   {
     timestamps: true,
-  },
+  }
 );
 
-export const UserModel = model<User>("User", UserSchema);
+export const UserModel = model<User>('User', UserSchema);

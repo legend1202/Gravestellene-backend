@@ -1,7 +1,7 @@
 // globalErrorHandler.ts
-import { Request, Response, NextFunction } from "express";
-import { MongoError } from "mongodb";
-import { sendResponse } from "./response.utils";
+import { Request, Response, NextFunction } from 'express';
+import { MongoError } from 'mongodb';
+import { sendResponse } from './response.utils';
 
 export class RequestError extends Error {
   public statusCode: number;
@@ -9,7 +9,7 @@ export class RequestError extends Error {
   constructor(message: string, statusCode = 500) {
     super(message);
     this.statusCode = statusCode;
-    this.name = "RequestError";
+    this.name = 'RequestError';
   }
 }
 
@@ -17,7 +17,7 @@ export class TransactionError extends RequestError {
   constructor(message: string) {
     super(message);
     this.statusCode = 500;
-    this.name = "TransactionError";
+    this.name = 'TransactionError';
   }
 }
 
@@ -25,7 +25,7 @@ export class AuthenticationError extends RequestError {
   constructor(message: string) {
     super(message);
     this.statusCode = 401;
-    this.name = "AuthenticationError";
+    this.name = 'AuthenticationError';
   }
 }
 
@@ -33,7 +33,7 @@ export class ValidationError extends RequestError {
   constructor(message: string) {
     super(message);
     this.statusCode = 422;
-    this.name = "ValidationError";
+    this.name = 'ValidationError';
   }
 }
 
@@ -41,7 +41,7 @@ export const handleGlobalError = (
   err: Error,
   req: Request,
   res: Response,
-  next: NextFunction,
+  next: NextFunction
 ) => {
   console.error(err.stack);
 
@@ -51,14 +51,14 @@ export const handleGlobalError = (
 
   if (err instanceof TransactionError) {
     return res.status(500).json({
-      message: "There was a problem with the database transaction",
+      message: 'There was a problem with the database transaction',
       error: err.message,
     });
   }
 
   if (err instanceof MongoError) {
     status = 400;
-    message = "A database error occurred";
+    message = 'A database error occurred';
     code = err.code;
   }
 
@@ -68,9 +68,9 @@ export const handleGlobalError = (
   }
 
   res.status(status).send({
-    status: "error",
+    status: 'error',
     message: message,
     code: code,
-    stack: process.env.DEPLOY_ENV === "development" ? err.stack : undefined,
+    stack: process.env.DEPLOY_ENV === 'development' ? err.stack : undefined,
   });
 };

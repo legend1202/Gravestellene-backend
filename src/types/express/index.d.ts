@@ -1,6 +1,6 @@
-import express from "express";
-import { ClientSession } from "mongoose";
-import { User } from "../../models/user.model";
+import express from 'express';
+import { ClientSession } from 'mongoose';
+import { User } from '../../models/user.model';
 
 declare global {
   namespace Express {

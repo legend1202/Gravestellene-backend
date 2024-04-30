@@ -1,5 +1,5 @@
-import { Document, model, Schema } from "mongoose";
-import { v4 as uuidv4 } from "uuid";
+import { Document, model, Schema } from 'mongoose';
+import { v4 as uuidv4 } from 'uuid';
 
 export interface Gravestone extends Document {
   id: string;
@@ -28,7 +28,7 @@ const GravestoneSchema = new Schema<Gravestone>(
     },
     graveyardId: {
       type: String,
-      ref: "Graveyard",
+      ref: 'Graveyard',
       required: true,
       unique: true,
     },
@@ -45,10 +45,10 @@ const GravestoneSchema = new Schema<Gravestone>(
   },
   {
     timestamps: true,
-  },
+  }
 );
 
 export const GravestoneModel = model<Gravestone>(
-  "Gravestone",
-  GravestoneSchema,
+  'Gravestone',
+  GravestoneSchema
 );

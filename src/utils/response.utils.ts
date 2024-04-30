@@ -1,10 +1,10 @@
-import { Response } from "express";
+import { Response } from 'express';
 
 export const sendResponse = (
   res: Response,
   code: number,
   message?: string,
-  data: any = {},
+  data: any = {}
 ) => {
   res.status(code).json({
     success: isCodeSuccessful(code),
