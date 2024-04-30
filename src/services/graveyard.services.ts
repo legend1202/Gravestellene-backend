@@ -26,8 +26,6 @@ export const handleGraveyardCreation = async (
   if (!name) throw new RequestError('Invalid fields. name', 400);
   if (!location) throw new RequestError('Invalid fields. location', 400);
 
-  console.log('----', fellesraadId);
-
   const existingGraveyard = await findOneGraveyard({
     fellesraadId,
     name,
@@ -78,6 +76,7 @@ export const createNewGraveyard = async (
     content: content || '',
     newsLink: newsLink || '',
     forecastLink: forecastLink || '',
+    approved: false,
   });
 
   await newGraveyard.save({ session });

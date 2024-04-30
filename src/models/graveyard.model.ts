@@ -10,6 +10,7 @@ export interface Graveyard extends Document {
   content?: string;
   newsLink?: string;
   forecastLink?: string;
+  approved: boolean;
   createdAt: Date;
   updateAt: Date;
 }
@@ -35,6 +36,7 @@ const GraveyardSchema = new Schema<Graveyard>(
     content: { type: String },
     newsLink: { type: String },
     forecastLink: { type: String },
+    approved: { type: Boolean },
   },
   {
     timestamps: true,

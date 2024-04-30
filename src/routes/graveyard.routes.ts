@@ -1,7 +1,8 @@
 import express from 'express';
+import verifyToken from '../middleware/auth.middleware';
+
 import { create } from '../controllers/graveyard.controller';
 import { errorWrap } from '../utils/error.utils';
-import verifyToken from '../middleware/auth.middleware';
 
 const router = express.Router();
 

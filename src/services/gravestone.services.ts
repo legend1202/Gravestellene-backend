@@ -7,19 +7,47 @@ import {
 import { GravestoneModel, Gravestone } from '../models/gravestone.model';
 import { RequestError } from '../utils/globalErrorHandler';
 import { isValidDate } from '../utils/validate.utils';
+import { Gender } from '../utils/constants';
 
-export const getGravestonesByName = async (
+export const getGravestonesByAdvancedSearch = async (
   name: string,
+  birthday: string,
+  deceasedDate: string,
+  buriedDate: string,
+  quarter: string,
+  graveSite: string,
+  graveSiteNumber: string,
   session?: ClientSession
 ) => {
-  var regex = new RegExp('^' + name + '$', 'i');
-  const user = await GravestoneModel.findOne(
-    { name: { $regex: regex } },
-    {},
-    { session: session }
-  );
+  let filter = {};
 
-  return user;
+  if (name) {
+    filter = { ...filter, name: new RegExp(name, 'i') };
+  }
+  if (birthday) {
+    filter = { ...filter, birthday };
+  }
+  if (deceasedDate) {
+    filter = { ...filter, deceasedDate };
+  }
+  if (buriedDate) {
+    filter = { ...filter, buriedDate };
+  }
+  if (quarter) {
+    filter = { ...filter, quarter };
+  }
+  if (graveSite) {
+    filter = { ...filter, graveSite };
+  }
+  if (graveSiteNumber) {
+    filter = { ...filter, graveSiteNumber };
+  }
+
+  filter = { ...filter, approved: false };
+
+  const gravestones = await GravestoneModel.find(filter);
+
+  return gravestones;
 };
 
 export const handleGravestoneCreation = async (
@@ -42,12 +70,27 @@ export const handleGravestoneCreation = async (
   if (!graveyardId) throw new RequestError('Invalid fields. graveyardId', 400);
   if (!name) throw new RequestError('Invalid fields. name', 400);
   if (!gender) throw new RequestError('Invalid fields. gender', 400);
+  if (!Gender.includes(gender)) {
+    throw new RequestError(
+      `Gender must be include one of "MAN", "WOMEN".`,
+      400
+    );
+  }
   if (!isValidDate(birthday) || !birthday)
-    throw new RequestError('Invalid fields. birthday type shouldbe', 400);
+    throw new RequestError(
+      'Invalid fields. birthday type should be DD/MM/YYYY',
+      400
+    );
   if (!isValidDate(deceasedDate) || !deceasedDate)
-    throw new RequestError('Invalid fields. deceasedDate', 400);
+    throw new RequestError(
+      'Invalid fields. deceasedDate type should be DD/MM/YYYY',
+      400
+    );
   if (!isValidDate(buriedDate) || !buriedDate)
-    throw new RequestError('Invalid fields. buriedDate', 400);
+    throw new RequestError(
+      'Invalid fields. buriedDate type should be DD/MM/YYYY',
+      400
+    );
   if (!quarter) throw new RequestError('Invalid fields. quarter', 400);
   if (!graveSite) throw new RequestError('Invalid fields. graveSite', 400);
   if (!homeTown) throw new RequestError('Invalid fields. homeTown', 400);

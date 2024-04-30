@@ -56,7 +56,7 @@ export const handleUserLogin = async (
     if (existingUser?.role && Roles.includes(existingUser?.role)) {
       const secretKey: string = process.env.JWT_SECRET_KEY || '';
       const token = jwt.sign({ userId: existingUser.id }, secretKey, {
-        expiresIn: '1h',
+        expiresIn: '4h',
       });
       return token;
     } else {
@@ -77,7 +77,7 @@ export const handleAssignRole = async (
   if (!role) throw new RequestError('Role must not be empty', 400);
   if (!Roles.includes(role)) {
     throw new RequestError(
-      `User Role must not be include one of "ADMIN", "FELLESRAAD", "COMPANY", "CLIENT".`,
+      `User Role must be include one of "ADMIN", "FELLESRAAD", "COMPANY", "CLIENT".`,
       400
     );
   }

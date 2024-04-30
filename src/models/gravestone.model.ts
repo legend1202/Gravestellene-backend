@@ -5,7 +5,7 @@ export interface Gravestone extends Document {
   id: string;
   graveyardId: string;
   name: string;
-  gender: string;
+  gender: 'MAN' | 'WOMEN';
   birthday: string;
   deceasedDate: string;
   buriedDate: string;
@@ -28,9 +28,6 @@ const GravestoneSchema = new Schema<Gravestone>(
     },
     graveyardId: {
       type: String,
-      ref: 'Graveyard',
-      required: true,
-      unique: true,
     },
     name: { type: String },
     gender: { type: String },
