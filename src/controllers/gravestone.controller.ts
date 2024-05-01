@@ -22,13 +22,12 @@ export const get = async (req: Request, res: Response) => {
 
   const session: ClientSession = req.session!;
 
-  if (!name) throw new RequestError('gravestoneName is required', 400);
+  // if (!name) throw new RequestError('gravestoneName is required', 400);
 
   const gravestones = await getGravestonesByAdvancedSearch(
     name,
     birthday,
     deceasedDate,
-    buriedDate,
     quarter,
     graveSite,
     graveSiteNumber,

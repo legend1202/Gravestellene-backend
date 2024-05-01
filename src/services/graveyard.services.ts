@@ -92,9 +92,13 @@ export const setApprove = async (
 
   if (!id) throw new RequestError('User Id must not be empty', 400);
 
-  const updatedGraveyard = await findByIdAndUpdateGraveyardDocument(id, {
-    approved,
-  });
+  const updatedGraveyard = await findByIdAndUpdateGraveyardDocument(
+    id,
+    {
+      approved,
+    },
+    { returnNewDocument: true }
+  );
 
   if (updatedGraveyard) {
     return updatedGraveyard;

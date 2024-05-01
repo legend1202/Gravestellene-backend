@@ -82,9 +82,13 @@ export const handleAssignRole = async (
     );
   }
 
-  const updatedUser = await findByIdAndUpdateUserDocument(id, {
-    role: role,
-  });
+  const updatedUser = await findByIdAndUpdateUserDocument(
+    id,
+    {
+      role: role,
+    },
+    { returnNewDocument: true }
+  );
 
   if (updatedUser) {
     return updatedUser;

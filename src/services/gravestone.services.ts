@@ -9,12 +9,13 @@ import { GravestoneModel, Gravestone } from '../models/gravestone.model';
 import { RequestError } from '../utils/globalErrorHandler';
 import { isValidDate } from '../utils/validate.utils';
 import { Gender } from '../utils/constants';
+import { DateRange } from '../types/req.type';
+import moment from 'moment';
 
 export const getGravestonesByAdvancedSearch = async (
   name: string,
-  birthday: string,
-  deceasedDate: string,
-  buriedDate: string,
+  birthday: DateRange,
+  deceasedDate: DateRange,
   quarter: string,
   graveSite: string,
   graveSiteNumber: string,
@@ -22,31 +23,65 @@ export const getGravestonesByAdvancedSearch = async (
 ) => {
   let filter = {};
 
+  if (
+    !name &&
+    !birthday.start &&
+    !birthday.end &&
+    !deceasedDate.start &&
+    !deceasedDate.end &&
+    !quarter &&
+    !graveSite &&
+    !graveSiteNumber
+  )
+    return [];
+
   if (name) {
     filter = { ...filter, name: new RegExp(name, 'i') };
   }
-  if (birthday) {
-    filter = { ...filter, birthday };
-  }
-  if (deceasedDate) {
-    filter = { ...filter, deceasedDate };
-  }
-  if (buriedDate) {
-    filter = { ...filter, buriedDate };
-  }
+
   if (quarter) {
     filter = { ...filter, quarter };
   }
+
   if (graveSite) {
     filter = { ...filter, graveSite };
   }
+
   if (graveSiteNumber) {
     filter = { ...filter, graveSiteNumber };
   }
 
-  filter = { ...filter, approved: false };
+  filter = { ...filter, approved: true };
 
-  const gravestones = await GravestoneModel.find(filter);
+  let gravestones = await GravestoneModel.find(filter);
+
+  if (birthday.start || birthday.end) {
+    gravestones = gravestones.filter((stone) => {
+      const stoneBirthday = moment(stone.birthday, 'DD/MM/YYYY');
+      return (
+        (!birthday.start ||
+          moment(birthday.start, 'DD/MM/YYYY').isSameOrBefore(stoneBirthday)) &&
+        (!birthday.end ||
+          moment(birthday.end, 'DD/MM/YYYY').isSameOrAfter(stoneBirthday))
+      );
+    });
+  }
+
+  if (deceasedDate.start || deceasedDate.end) {
+    gravestones = gravestones.filter((stone) => {
+      const stoneDeceasedDate = moment(stone.deceasedDate, 'DD/MM/YYYY');
+      return (
+        (!deceasedDate.start ||
+          moment(deceasedDate.start, 'DD/MM/YYYY').isSameOrBefore(
+            stoneDeceasedDate
+          )) &&
+        (!deceasedDate.end ||
+          moment(deceasedDate.end, 'DD/MM/YYYY').isSameOrAfter(
+            stoneDeceasedDate
+          ))
+      );
+    });
+  }
 
   return gravestones;
 };
@@ -135,9 +170,13 @@ export const setApprove = async (
 
   if (!id) throw new RequestError('User Id must not be empty', 400);
 
-  const updatedGravestone = await findByIdAndUpdateGravestoneDocument(id, {
-    approved,
-  });
+  const updatedGravestone = await findByIdAndUpdateGravestoneDocument(
+    id,
+    {
+      approved,
+    },
+    { returnNewDocument: true }
+  );
 
   if (updatedGravestone) {
     return updatedGravestone;
