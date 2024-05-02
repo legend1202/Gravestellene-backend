@@ -12,7 +12,7 @@ router.post(
   withTransaction(errorWrap(login, 'Could not login user'))
 );
 
-router.post(
+router.put(
   '/assign-role',
   errorWrap(verifyToken, 'Could not verify JWT token'),
   withTransaction(errorWrap(assignRole, 'Could not assign user role'))

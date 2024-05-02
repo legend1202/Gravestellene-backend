@@ -6,6 +6,8 @@ export interface Services extends Document {
   graveyardId: string;
   companyId: string;
   name: string;
+  description: string;
+  picture?: string[];
   price: string;
   approved: boolean;
   createdAt: Date;
@@ -33,6 +35,12 @@ const ServicesSchema = new Schema<Services>(
       unique: true,
     },
     name: { type: String },
+    description: { type: String },
+    picture: [
+      {
+        type: String,
+      },
+    ],
     price: { type: String },
     approved: { type: Boolean },
   },

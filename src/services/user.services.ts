@@ -90,13 +90,9 @@ export const handleAssignRole = async (
     );
   }
 
-  const updatedUser = await findByIdAndUpdateUserDocument(
-    id,
-    {
-      role: role,
-    },
-    { returnNewDocument: true }
-  );
+  const updatedUser = await findByIdAndUpdateUserDocument(id, {
+    role: role,
+  });
 
   if (updatedUser) {
     return updatedUser;
@@ -135,5 +131,8 @@ export const findByIdAndUpdateUserDocument = async (
   update: UpdateQuery<User>,
   options?: QueryOptions<User>
 ) => {
-  return await UserModel.findOneAndUpdate({ id }, update, options);
+  return await UserModel.findOneAndUpdate({ id }, update, {
+    ...options,
+    returnDocument: 'after',
+  });
 };

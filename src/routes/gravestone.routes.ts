@@ -14,7 +14,7 @@ router.post(
   errorWrap(create, 'Could not create gravestone')
 );
 
-router.post(
+router.put(
   '/approve',
   errorWrap(verifyToken, 'Could not verify JWT token'),
   errorWrap(

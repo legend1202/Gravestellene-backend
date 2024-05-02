@@ -53,7 +53,7 @@ export const getGravestonesByAdvancedSearch = async (
 
   filter = { ...filter, approved: true };
 
-  let gravestones = await GravestoneModel.find(filter);
+  let gravestones = await GravestoneModel.find(filter, { _id: 0, __v: 0 });
 
   if (birthday.start || birthday.end) {
     gravestones = gravestones.filter((stone) => {
@@ -170,13 +170,9 @@ export const setApprove = async (
 
   if (!id) throw new RequestError('User Id must not be empty', 400);
 
-  const updatedGravestone = await findByIdAndUpdateGravestoneDocument(
-    id,
-    {
-      approved,
-    },
-    { returnNewDocument: true }
-  );
+  const updatedGravestone = await findByIdAndUpdateGravestoneDocument(id, {
+    approved,
+  });
 
   if (updatedGravestone) {
     return updatedGravestone;
@@ -229,5 +225,8 @@ export const findByIdAndUpdateGravestoneDocument = async (
   update: UpdateQuery<Gravestone>,
   options?: QueryOptions<Gravestone>
 ) => {
-  return await GravestoneModel.findOneAndUpdate({ id }, update, options);
+  return await GravestoneModel.findOneAndUpdate({ id }, update, {
+    ...options,
+    returnDocument: 'after',
+  });
 };

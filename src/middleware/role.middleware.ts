@@ -49,7 +49,6 @@ export const verifyFellesraad = async (
     const secretKey: string = process.env.JWT_SECRET_KEY || '';
     const decoded = jwt.verify(token, secretKey) as DecodedToken;
     req.userId = decoded.userId;
-    console.log(decoded.userId);
     const existingUser = await findOneUser({ id: decoded.userId });
 
     if (existingUser && existingUser.role === 'FELLESRAAD') {
@@ -60,7 +59,37 @@ export const verifyFellesraad = async (
       );
     }
   } catch (error) {
-    console.log(error);
+    next(new AuthenticationError('Invalid Token'));
+  }
+};
+
+export const verifyCompany = async (
+  req: Request & { userId?: DecodedToken['userId'] },
+  res: Response,
+  next: NextFunction
+): Promise<void> => {
+  const token = req.header('Authorization');
+
+  if (!token) {
+    return next(new AuthenticationError('Missing Authorization Header'));
+  }
+
+  try {
+    const secretKey: string = process.env.JWT_SECRET_KEY || '';
+    const decoded = jwt.verify(token, secretKey) as DecodedToken;
+    req.userId = decoded.userId;
+    const existingUser = await findOneUser({ id: decoded.userId });
+
+    if (existingUser && existingUser.role === 'COMPANY') {
+      next();
+    } else {
+      next(
+        new RequestError(
+          `Company user can do this caction only. This user can't do this action`
+        )
+      );
+    }
+  } catch (error) {
     next(new AuthenticationError('Invalid Token'));
   }
 };
