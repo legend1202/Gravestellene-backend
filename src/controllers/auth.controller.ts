@@ -14,7 +14,7 @@ export const create = async (req: Request, res: Response) => {
   try {
     const { user } = req.body;
     const newUser = await handleUserCreation(user, session);
-    return sendResponse(res, 201, 'Created User', {
+    return sendResponse(res, 201, 'Created User Successfully', {
       user_id: newUser.id,
       email: newUser.email,
     });
