@@ -121,6 +121,7 @@ export const createNewUser = async (
     email,
     password,
     name,
+    role: 'CLIENT',
   });
 
   await newUser.save({ session });

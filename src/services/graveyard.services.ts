@@ -51,6 +51,28 @@ export const handleGraveyardCreation = async (
   return newGraveyard;
 };
 
+export const handleGraveyardUpdate = async (
+  graveyard: Partial<Graveyard> & Document,
+  session?: ClientSession
+): Promise<Graveyard> => {
+  const { id } = graveyard;
+
+  if (!id) throw new RequestError('Invalid fields. graveyardId', 400);
+  if (!graveyard) throw new RequestError('Invalid fields. graveyard', 400);
+
+  const updatedGraveyard = await findByIdAndUpdateGraveyardDocument(
+    id,
+    { ...graveyard },
+    { returnNewDocument: true }
+  );
+
+  if (updatedGraveyard) {
+    return updatedGraveyard;
+  } else {
+    throw new RequestError(`${id} graveyard update failed`, 500);
+  }
+};
+
 export async function findOneGraveyard(
   filter?: FilterQuery<Graveyard>,
   projection?: ProjectionType<Graveyard>,
