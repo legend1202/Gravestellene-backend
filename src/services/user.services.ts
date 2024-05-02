@@ -64,6 +64,8 @@ export const handleUserLogin = async (
         id: existingUser.id,
         name: existingUser.name,
         email: existingUser.email,
+        role: existingUser.role,
+        avatar: existingUser.avatar,
       };
     } else {
       throw new AuthenticationError(`You didn't approved by admin.`);
