@@ -41,7 +41,7 @@ export const handleUserCreation = async (
 export const handleUserLogin = async (
   user: Partial<User> & Document,
   session?: ClientSession
-): Promise<String> => {
+): Promise<any> => {
   const { email, password } = user;
 
   if (!email) throw new RequestError('Invalid fields', 400);
@@ -59,7 +59,12 @@ export const handleUserLogin = async (
       const token = jwt.sign({ userId: existingUser.id }, secretKey, {
         expiresIn: '4h',
       });
-      return token;
+      return {
+        token,
+        id: existingUser.id,
+        name: existingUser.name,
+        email: existingUser.email,
+      };
     } else {
       throw new AuthenticationError(`You didn't approved by admin.`);
     }

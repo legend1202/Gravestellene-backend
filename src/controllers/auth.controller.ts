@@ -28,8 +28,13 @@ export const login = async (req: Request, res: Response) => {
 
   try {
     const { user } = req.body;
-    const token = await handleUserLogin(user, session);
-    return sendResponse(res, 200, 'Login Successfully', { JWT_token: token });
+    const { token, id, name, email } = await handleUserLogin(user, session);
+    return sendResponse(res, 200, 'Login Successfully', {
+      id,
+      name,
+      email,
+      JWT_token: token,
+    });
   } catch (error) {
     throw new RequestError(`${error}`, 500);
   }
