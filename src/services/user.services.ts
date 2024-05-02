@@ -16,8 +16,9 @@ export const handleUserCreation = async (
   user: Partial<User> & Document,
   session?: ClientSession
 ): Promise<User> => {
-  const { email, password } = user;
+  const { email, password, name } = user;
 
+  if (!name) throw new RequestError('Name must not be empty', 400);
   if (!email) throw new RequestError('Invalid fields', 400);
   if (!password) throw new RequestError('Password must not be empty', 400);
 
@@ -32,7 +33,7 @@ export const handleUserCreation = async (
 
   const hashedPassword = await bcrypt.hash(password, 10);
 
-  const newUser = await createNewUser(email, hashedPassword, session);
+  const newUser = await createNewUser(email, hashedPassword, name, session);
 
   return newUser;
 };
@@ -108,11 +109,13 @@ export async function findOneUser(
 export const createNewUser = async (
   email: string,
   password: string,
+  name: string,
   session?: ClientSession
 ): Promise<User> => {
   const newUser = new UserModel({
     email,
     password,
+    name,
   });
 
   await newUser.save({ session });
