@@ -1,7 +1,6 @@
 import { Request, Response } from 'express';
-import mongoose, { ClientSession } from 'mongoose';
+import { ClientSession } from 'mongoose';
 import { sendResponse } from '../utils/response.utils';
-import { RequestError } from '../utils/globalErrorHandler';
 import {
   handleGraveyardCreation,
   handleGraveyardUpdate,

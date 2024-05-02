@@ -16,6 +16,10 @@ const router = express.Router();
 router.post(
   '/create',
   errorWrap(verifyToken, 'Could not verify JWT token'),
+  errorWrap(
+    verifyFellesraad,
+    `Fellesraad can create only. This user can't create graveyard`
+  ),
   errorWrap(create, 'Could not create Graveyard')
 );
 

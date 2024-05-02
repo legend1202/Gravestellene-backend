@@ -43,8 +43,6 @@ export const handleGlobalError = (
   res: Response,
   next: NextFunction
 ) => {
-  console.error(err.stack);
-
   let status = 500;
   let message = err.message;
   let code;
