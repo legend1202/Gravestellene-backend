@@ -1,9 +1,14 @@
 import express from 'express';
 import verifyToken from '../middleware/auth.middleware';
 
-import { get, create, approve } from '../controllers/gravestone.controller';
+import {
+  get,
+  create,
+  approve,
+  update,
+} from '../controllers/gravestone.controller';
 import { errorWrap } from '../utils/error.utils';
-import { verifyAdmin } from '../middleware/role.middleware';
+import { verifyAdmin, verifyFellesraad } from '../middleware/role.middleware';
 
 const router = express.Router();
 
@@ -22,6 +27,16 @@ router.put(
     `Admin can approve only. This user can't approve gravestone`
   ),
   errorWrap(approve, 'Could not create gravestone')
+);
+
+router.put(
+  '/update',
+  errorWrap(verifyToken, 'Could not verify JWT token'),
+  errorWrap(
+    verifyFellesraad,
+    `Fellesraad can update only. This user can't update gravestone`
+  ),
+  errorWrap(update, 'Could not update gravestone')
 );
 
 export default router;

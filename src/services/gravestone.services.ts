@@ -181,6 +181,26 @@ export const setApprove = async (
   }
 };
 
+export const handleGravestoneUpdate = async (
+  gravestone: Partial<Gravestone> & Document,
+  session?: ClientSession
+): Promise<Gravestone> => {
+  const { id } = gravestone;
+
+  if (!id) throw new RequestError('Invalid fields. gravestoneId', 400);
+  if (!gravestone) throw new RequestError('Invalid fields. gravestone', 400);
+
+  const updatedGraveyard = await findByIdAndUpdateGravestoneDocument(id, {
+    ...gravestone,
+  });
+
+  if (updatedGraveyard) {
+    return updatedGraveyard;
+  } else {
+    throw new RequestError(`${id} graveyard update failed`, 500);
+  }
+};
+
 export async function findOneGravestone(
   filter?: FilterQuery<Gravestone>,
   projection?: ProjectionType<Gravestone>,

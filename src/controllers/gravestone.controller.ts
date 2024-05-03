@@ -5,6 +5,7 @@ import { RequestError } from '../utils/globalErrorHandler';
 import {
   getGravestonesByAdvancedSearch,
   handleGravestoneCreation,
+  handleGravestoneUpdate,
   setApprove,
 } from '../services/gravestone.services';
 import { DecodedToken } from '../types/req.type';
@@ -60,4 +61,17 @@ export const approve = async (
   const newGravestone = await setApprove(gravestone);
 
   return sendResponse(res, 200, 'Gravestone approved', newGravestone);
+};
+
+export const update = async (req: Request, res: Response) => {
+  const { gravestone } = req.body;
+
+  const newGravestone = await handleGravestoneUpdate(gravestone);
+
+  return sendResponse(
+    res,
+    200,
+    'Gravestone Updated Successfully',
+    newGravestone
+  );
 };
