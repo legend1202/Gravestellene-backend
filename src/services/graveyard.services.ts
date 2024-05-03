@@ -160,7 +160,6 @@ export const getGraveyardsByToken = async (
   });
 
   if (existingUser) {
-    console.log(existingUser.id);
     const filter = { fellesraadId: existingUser.id };
     if (existingUser.role === 'ADMIN' || existingUser.role === 'COMPANY') {
       const filter = {};

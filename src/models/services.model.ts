@@ -24,15 +24,9 @@ const ServicesSchema = new Schema<Services>(
     },
     graveyardId: {
       type: String,
-      ref: 'Graveyard',
-      required: true,
-      unique: true,
     },
     companyId: {
       type: String,
-      ref: 'User',
-      required: true,
-      unique: true,
     },
     name: { type: String },
     description: { type: String },
