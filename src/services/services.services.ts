@@ -45,6 +45,49 @@ export const handleServicesCreation = async (
   return newServices;
 };
 
+export const setApprove = async (
+  services: Partial<Services> & Document,
+  session?: ClientSession
+): Promise<Services> => {
+  const { id, approved } = services;
+
+  if (!id) throw new RequestError('Services Id must not be empty', 400);
+
+  const updatedServices = await findByIdAndUpdateServicesDocument(id, {
+    approved,
+  });
+
+  if (updatedServices) {
+    return updatedServices;
+  } else {
+    throw new RequestError(`There is not ${id} services.`, 500);
+  }
+};
+
+export const deleteDocument = async (
+  servicesId: string,
+  session?: ClientSession
+): Promise<any> => {
+  if (!servicesId) throw new RequestError('Services Id must not be empty', 400);
+
+  const existingServices = await findOneServices({
+    id: servicesId,
+  });
+
+  if (existingServices) {
+    try {
+      const deletedServices = await deleteServices(servicesId);
+      return deletedServices;
+    } catch (e: any) {
+      throw new RequestError(`${e.errmsg}`, 500);
+    }
+  } else {
+    throw new RequestError(`There is no ${servicesId} services.`, 500);
+  }
+};
+
+//////////////////////////////////////
+
 export const createNewServices = async (
   graveyardId: string,
   companyId: string,

@@ -113,7 +113,7 @@ export const setApprove = async (
 ): Promise<Graveyard> => {
   const { id, approved } = graveyard;
 
-  if (!id) throw new RequestError('User Id must not be empty', 400);
+  if (!id) throw new RequestError('Graveyard Id must not be empty', 400);
 
   const updatedGraveyard = await findByIdAndUpdateGraveyardDocument(id, {
     approved,
