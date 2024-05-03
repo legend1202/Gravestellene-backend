@@ -47,10 +47,7 @@ export const handleUserLogin = async (
   if (!email) throw new RequestError('Invalid fields', 400);
   if (!password) throw new RequestError('Password must not be empty', 400);
 
-  const existingUser = await findOneUser(
-    { email },
-    { _id: 0, __v: 0, password: 0 }
-  );
+  const existingUser = await findOneUser({ email }, { _id: 0, __v: 0 });
   if (existingUser) {
     const passwordMatch = await bcrypt.compare(password, existingUser.password);
     if (!passwordMatch) {
@@ -74,7 +71,11 @@ export const handleUserLogin = async (
       );
       return {
         token,
-        ...existingUser,
+        id: existingUser.id,
+        email: existingUser.email,
+        name: existingUser.name,
+        role: existingUser.role,
+        avatar: existingUser.avatar,
       };
     } else {
       throw new AuthenticationError(`You didn't approved by admin.`);
