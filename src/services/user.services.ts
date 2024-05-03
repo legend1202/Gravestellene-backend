@@ -47,7 +47,10 @@ export const handleUserLogin = async (
   if (!email) throw new RequestError('Invalid fields', 400);
   if (!password) throw new RequestError('Password must not be empty', 400);
 
-  const existingUser = await findOneUser({ email },{_id:0, __v:0, password:0});
+  const existingUser = await findOneUser(
+    { email },
+    { _id: 0, __v: 0, password: 0 }
+  );
   if (existingUser) {
     const passwordMatch = await bcrypt.compare(password, existingUser.password);
     if (!passwordMatch) {
@@ -56,12 +59,22 @@ export const handleUserLogin = async (
 
     if (existingUser?.role && Roles.includes(existingUser?.role)) {
       const secretKey: string = process.env.JWT_SECRET_KEY || '';
-      const token = jwt.sign({ userId: existingUser.id, name: existingUser.name, role: existingUser.role, email:existingUser.email, avatar:existingUser.avatar }, secretKey, {
-        expiresIn: '4h',
-      });
+      const token = jwt.sign(
+        {
+          userId: existingUser.id,
+          name: existingUser.name,
+          role: existingUser.role,
+          email: existingUser.email,
+          avatar: existingUser.avatar,
+        },
+        secretKey,
+        {
+          expiresIn: '6d',
+        }
+      );
       return {
         token,
-        ...existingUser
+        ...existingUser,
       };
     } else {
       throw new AuthenticationError(`You didn't approved by admin.`);
