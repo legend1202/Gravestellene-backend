@@ -85,6 +85,19 @@ export const handleUserLogin = async (
   }
 };
 
+export const handleGetUsers = async (
+  session?: ClientSession
+): Promise<User[]> => {
+  const users = await UserModel.find(
+    {
+      role: { $in: ['COMPANY', 'FELLESRAAD', 'CLIENT'] },
+    },
+    { _id: 0, __v: 0, password: 0 }
+  );
+
+  return users;
+};
+
 export const handleAssignRole = async (
   user: Partial<User> & Document,
   session?: ClientSession

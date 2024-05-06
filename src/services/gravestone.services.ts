@@ -201,6 +201,29 @@ export const handleGravestoneUpdate = async (
   }
 };
 
+export const deleteDocument = async (
+  gravestoneId: string,
+  session?: ClientSession
+): Promise<any> => {
+  if (!gravestoneId)
+    throw new RequestError('Gravestone Id must not be empty', 400);
+
+  const existingGravestone = await findOneGravestone({
+    id: gravestoneId,
+  });
+
+  if (existingGravestone) {
+    try {
+      const deletedGravestone = await deleteGravestone(gravestoneId);
+      return deletedGravestone;
+    } catch (e: any) {
+      throw new RequestError(`${e.errmsg}`, 500);
+    }
+  } else {
+    throw new RequestError(`There is no ${gravestoneId} graveyard.`, 500);
+  }
+};
+
 export async function findOneGravestone(
   filter?: FilterQuery<Gravestone>,
   projection?: ProjectionType<Gravestone>,
@@ -249,4 +272,11 @@ export const findByIdAndUpdateGravestoneDocument = async (
     ...options,
     returnDocument: 'after',
   });
+};
+
+export const deleteGravestone = async (
+  gravestoneId: string,
+  options?: QueryOptions<Gravestone>
+) => {
+  return await GravestoneModel.deleteOne({ id: gravestoneId });
 };

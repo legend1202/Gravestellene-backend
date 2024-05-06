@@ -6,6 +6,7 @@ import {
   getGravestonesByAdvancedSearch,
   handleGravestoneCreation,
   handleGravestoneUpdate,
+  deleteDocument,
   setApprove,
 } from '../services/gravestone.services';
 import { DecodedToken } from '../types/req.type';
@@ -73,5 +74,18 @@ export const update = async (req: Request, res: Response) => {
     200,
     'Gravestone Updated Successfully',
     newGravestone
+  );
+};
+
+export const deleteGravestone = async (req: Request, res: Response) => {
+  const { gravestoneId } = req.body;
+
+  const deletedGravestone = await deleteDocument(gravestoneId);
+
+  return sendResponse(
+    res,
+    200,
+    'Gravestone Deleted Successfully',
+    deletedGravestone
   );
 };
