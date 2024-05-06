@@ -12,20 +12,21 @@ export const handleServicesCreation = async (
   services: Partial<Services> & Document,
   session?: ClientSession
 ): Promise<Services> => {
-  const { graveyardId, companyId, name, description, picture, price } =
+  const { graveyardId, companyId, name, description, picture, price, unit } =
     services;
 
-  if (!graveyardId) throw new RequestError('Invalid fields. graveyardId', 400);
   if (!companyId) throw new RequestError('Invalid fields. companyId', 400);
   if (!name) throw new RequestError('Invalid fields. name', 400);
   if (!description) throw new RequestError('Invalid fields. description', 400);
   if (!price) throw new RequestError('Invalid fields. price', 400);
+  if (!unit) throw new RequestError('Invalid fields. unit', 400);
 
   const existingServices = await findOneServices({
-    graveyardId,
     companyId,
     name,
     description,
+    price,
+    unit,
   });
 
   if (existingServices) {
@@ -39,22 +40,23 @@ export const handleServicesCreation = async (
     description,
     picture,
     price,
+    unit,
     session
   );
 
   return newServices;
 };
 
-export const setApprove = async (
+export const updateServices = async (
   services: Partial<Services> & Document,
   session?: ClientSession
 ): Promise<Services> => {
-  const { id, approved } = services;
+  const { id } = services;
 
   if (!id) throw new RequestError('Services Id must not be empty', 400);
 
   const updatedServices = await findByIdAndUpdateServicesDocument(id, {
-    approved,
+    ...services,
   });
 
   if (updatedServices) {
@@ -65,36 +67,37 @@ export const setApprove = async (
 };
 
 export const deleteDocument = async (
-  servicesId: string,
+  serviceId: string,
   session?: ClientSession
 ): Promise<any> => {
-  if (!servicesId) throw new RequestError('Services Id must not be empty', 400);
+  if (!serviceId) throw new RequestError('Services Id must not be empty', 400);
 
   const existingServices = await findOneServices({
-    id: servicesId,
+    id: serviceId,
   });
 
   if (existingServices) {
     try {
-      const deletedServices = await deleteServices(servicesId);
+      const deletedServices = await deleteServices(serviceId);
       return deletedServices;
     } catch (e: any) {
       throw new RequestError(`${e.errmsg}`, 500);
     }
   } else {
-    throw new RequestError(`There is no ${servicesId} services.`, 500);
+    throw new RequestError(`There is no ${serviceId} services.`, 500);
   }
 };
 
 //////////////////////////////////////
 
 export const createNewServices = async (
-  graveyardId: string,
+  graveyardId: string[] | undefined,
   companyId: string,
   name: string,
   description: string,
   picture: string[] | undefined,
-  price: string,
+  price: number,
+  unit: string,
   session?: ClientSession
 ): Promise<Services> => {
   const newServices = new ServicesModel({
@@ -104,7 +107,7 @@ export const createNewServices = async (
     description,
     picture,
     price,
-    approved: false,
+    unit,
   });
 
   await newServices.save({ session });

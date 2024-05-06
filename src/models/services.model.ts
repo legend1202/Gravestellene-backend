@@ -3,13 +3,13 @@ import { v4 as uuidv4 } from 'uuid';
 
 export interface Services extends Document {
   id: string;
-  graveyardId: string;
+  graveyardId?: string[];
   companyId: string;
   name: string;
   description: string;
   picture?: string[];
-  price: string;
-  approved: boolean;
+  price: number;
+  unit: string;
   createdAt: Date;
   updateAt: Date;
 }
@@ -22,9 +22,11 @@ const ServicesSchema = new Schema<Services>(
       required: true,
       unique: true,
     },
-    graveyardId: {
-      type: String,
-    },
+    graveyardId: [
+      {
+        type: String,
+      },
+    ],
     companyId: {
       type: String,
     },
@@ -35,8 +37,8 @@ const ServicesSchema = new Schema<Services>(
         type: String,
       },
     ],
-    price: { type: String },
-    approved: { type: Boolean },
+    price: { type: Number },
+    unit: { type: String },
   },
   {
     timestamps: true,
