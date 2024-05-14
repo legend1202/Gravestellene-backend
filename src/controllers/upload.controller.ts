@@ -3,10 +3,6 @@ import { sendResponse } from '../utils/response.utils';
 import { RequestError } from '../utils/globalErrorHandler';
 
 export const uploadImage = async (req: Request, res: Response) => {
-  // const { Graveyard } = req.body;
-  // const session: ClientSession = req.session!;
-
-  // const newGraveyard = await handleGraveyardCreation(Graveyard, session);
   if (!req.files) {
     throw new RequestError('files is required', 400);
   }

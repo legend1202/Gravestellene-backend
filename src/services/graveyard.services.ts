@@ -180,6 +180,23 @@ export const getGraveyardsByToken = async (
   }
 };
 
+export const getGraveyardById = async (
+  id: string,
+  session?: ClientSession
+): Promise<Graveyard | null> => {
+  const existingGraveyard = await findOneGraveyard({
+    id: id,
+  });
+
+  if (!id) throw new RequestError('Graveyard Id must not be empty', 400);
+
+  if (existingGraveyard) {
+    return existingGraveyard;
+  } else {
+    throw new RequestError(`Can't find the graveyard`, 500);
+  }
+};
+
 export const findByIdAndUpdateGraveyardDocument = async (
   id: string,
   update: UpdateQuery<Graveyard>,
