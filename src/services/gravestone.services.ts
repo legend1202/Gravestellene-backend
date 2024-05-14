@@ -86,6 +86,27 @@ export const getGravestonesByAdvancedSearch = async (
   return gravestones;
 };
 
+export const getGravestonesByGraveyardId = async (graveyardId: string) => {
+  if (!graveyardId) throw new RequestError('Invalid fields. graveyardId', 400);
+
+  const filter = { graveyardId };
+
+  const gravestones = await GravestoneModel.find(filter, { _id: 0, __v: 0 });
+
+  return gravestones;
+};
+
+export const getGravestoneById = async (gravestoneId: string) => {
+  if (!gravestoneId)
+    throw new RequestError('Invalid fields. gravestoneId', 400);
+
+  const filter = { id: gravestoneId };
+
+  const gravestones = await GravestoneModel.find(filter, { _id: 0, __v: 0 });
+
+  return gravestones;
+};
+
 export const handleGravestoneCreation = async (
   gravestone: Partial<Gravestone> & Document,
   session?: ClientSession

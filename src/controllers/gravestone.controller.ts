@@ -8,6 +8,8 @@ import {
   handleGravestoneUpdate,
   deleteDocument,
   setApprove,
+  getGravestonesByGraveyardId,
+  getGravestoneById,
 } from '../services/gravestone.services';
 import { DecodedToken } from '../types/req.type';
 
@@ -37,6 +39,30 @@ export const get = async (req: Request, res: Response) => {
   );
 
   return sendResponse(res, 200, 'Get Gravestones', gravestones);
+};
+
+export const getByGraveyardId = async (req: Request, res: Response) => {
+  const { graveyardId } = req.params;
+
+  const session: ClientSession = req.session!;
+
+  // if (!name) throw new RequestError('gravestoneName is required', 400);
+
+  const gravestones = await getGravestonesByGraveyardId(graveyardId);
+
+  return sendResponse(res, 200, 'Get Gravestones', gravestones);
+};
+
+export const getById = async (req: Request, res: Response) => {
+  const { gravestoneId } = req.params;
+
+  const session: ClientSession = req.session!;
+
+  // if (!name) throw new RequestError('gravestoneName is required', 400);
+
+  const gravestone = await getGravestoneById(gravestoneId);
+
+  return sendResponse(res, 200, 'Get Gravestone', gravestone);
 };
 
 export const create = async (req: Request, res: Response) => {
