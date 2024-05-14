@@ -6,6 +6,8 @@ import {
   deleteDocument,
   handleServicesCreation,
   updateServices,
+  addGraveyardId,
+  removeGraveyardId,
 } from '../services/services.services';
 
 export const create = async (
@@ -32,6 +34,32 @@ export const update = async (req: Request, res: Response) => {
     res,
     200,
     'Services Updated Successfully',
+    updatedServices
+  );
+};
+
+export const setApprove = async (req: Request, res: Response) => {
+  const { services } = req.body;
+
+  const updatedServices = await addGraveyardId(services);
+
+  return sendResponse(
+    res,
+    200,
+    'Service Approved To Graveyard Successfully',
+    updatedServices
+  );
+};
+
+export const removeApprove = async (req: Request, res: Response) => {
+  const { services } = req.body;
+
+  const updatedServices = await removeGraveyardId(services);
+
+  return sendResponse(
+    res,
+    200,
+    'Service Removed From Graveyard Successfully',
     updatedServices
   );
 };

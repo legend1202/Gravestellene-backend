@@ -7,6 +7,8 @@ import {
   create,
   update,
   deleteServices,
+  setApprove,
+  removeApprove,
 } from '../controllers/services.controller';
 
 const router = express.Router();
@@ -25,6 +27,18 @@ router.put(
   '/update',
   errorWrap(verifyToken, 'Could not verify JWT token'),
   errorWrap(update, 'Could not update services')
+);
+
+router.put(
+  '/setApprove',
+  errorWrap(verifyToken, 'Could not verify JWT token'),
+  errorWrap(setApprove, 'Could not approve the service')
+);
+
+router.put(
+  '/removeApprove',
+  errorWrap(verifyToken, 'Could not verify JWT token'),
+  errorWrap(removeApprove, 'Could not deactive approve the service')
 );
 
 router.delete(

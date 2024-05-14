@@ -7,6 +7,8 @@ import {
 } from 'mongoose';
 import { Services, ServicesModel } from '../models/services.model';
 import { RequestError } from '../utils/globalErrorHandler';
+import { DecodedToken } from '../types/req.type';
+import { add, remove } from '../utils/common';
 
 export const handleServicesCreation = async (
   services: Partial<Services> & Document,
@@ -61,6 +63,72 @@ export const updateServices = async (
 
   if (updatedServices) {
     return updatedServices;
+  } else {
+    throw new RequestError(`There is not ${id} services.`, 500);
+  }
+};
+
+export const addGraveyardId = async (
+  services: Partial<Services> & Document & { graveyardId: string },
+  session?: ClientSession
+): Promise<Services> => {
+  const { id, graveyardId } = services;
+
+  if (!id) throw new RequestError('Services Id must not be empty', 400);
+  if (!graveyardId)
+    throw new RequestError('graveyard Id must not be empty', 400);
+
+  const existingService = await findOneServices({ id });
+
+  if (existingService) {
+    const graveyardIds = {
+      graveyardIds: add(existingService.graveyardIds, graveyardId),
+    };
+    const updatedServices = await findByIdAndUpdateServicesDocument(id, {
+      ...graveyardIds,
+    });
+
+    if (updatedServices) {
+      return updatedServices;
+    } else {
+      throw new RequestError(
+        `Update Failed. There is not ${id} services.`,
+        500
+      );
+    }
+  } else {
+    throw new RequestError(`There is not ${id} services.`, 500);
+  }
+};
+
+export const removeGraveyardId = async (
+  services: Partial<Services> & Document & { graveyardId: string },
+  session?: ClientSession
+): Promise<Services> => {
+  const { id, graveyardId } = services;
+
+  if (!id) throw new RequestError('Services Id must not be empty', 400);
+  if (!graveyardId)
+    throw new RequestError('graveyard Id must not be empty', 400);
+
+  const existingService = await findOneServices({ id });
+
+  if (existingService) {
+    const graveyardIds = {
+      graveyardIds: remove(existingService.graveyardIds, graveyardId),
+    };
+    const updatedServices = await findByIdAndUpdateServicesDocument(id, {
+      ...graveyardIds,
+    });
+
+    if (updatedServices) {
+      return updatedServices;
+    } else {
+      throw new RequestError(
+        `Update Failed. There is not ${id} services.`,
+        500
+      );
+    }
   } else {
     throw new RequestError(`There is not ${id} services.`, 500);
   }

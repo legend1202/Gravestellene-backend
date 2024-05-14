@@ -3,7 +3,7 @@ import { v4 as uuidv4 } from 'uuid';
 
 export interface Services extends Document {
   id: string;
-  graveyardIds?: string[];
+  graveyardIds: string[];
   companyId: string;
   name: string;
   description: string;

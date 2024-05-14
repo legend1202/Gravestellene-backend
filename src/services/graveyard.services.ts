@@ -161,12 +161,16 @@ export const getGraveyardsByToken = async (
 
   if (existingUser) {
     const filter = { fellesraadId: existingUser.id };
-    if (existingUser.role === 'ADMIN' || existingUser.role === 'COMPANY') {
+    if (existingUser.role === 'ADMIN') {
       const filter = {};
       const graveyards = await findGraveyards(filter, { _id: 0, __v: 0 });
       return graveyards;
     } else if (existingUser.role === 'FELLESRAAD') {
       const filter = { fellesraadId: existingUser.id };
+      const graveyards = await findGraveyards(filter, { _id: 0, __v: 0 });
+      return graveyards;
+    } else if (existingUser.role === 'COMPANY') {
+      const filter = { approved: true };
       const graveyards = await findGraveyards(filter, { _id: 0, __v: 0 });
       return graveyards;
     } else {
