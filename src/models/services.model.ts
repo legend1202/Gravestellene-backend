@@ -3,7 +3,7 @@ import { v4 as uuidv4 } from 'uuid';
 
 export interface Services extends Document {
   id: string;
-  graveyardId?: string[];
+  graveyardIds?: string[];
   companyId: string;
   name: string;
   description: string;
@@ -22,7 +22,7 @@ const ServicesSchema = new Schema<Services>(
       required: true,
       unique: true,
     },
-    graveyardId: [
+    graveyardIds: [
       {
         type: String,
       },

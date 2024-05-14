@@ -12,7 +12,7 @@ export const handleServicesCreation = async (
   services: Partial<Services> & Document,
   session?: ClientSession
 ): Promise<Services> => {
-  const { graveyardId, companyId, name, description, picture, price, unit } =
+  const { graveyardIds, companyId, name, description, picture, price, unit } =
     services;
 
   if (!companyId) throw new RequestError('Invalid fields. companyId', 400);
@@ -34,7 +34,7 @@ export const handleServicesCreation = async (
   }
 
   const newServices = await createNewServices(
-    graveyardId,
+    graveyardIds,
     companyId,
     name,
     description,
@@ -91,7 +91,7 @@ export const deleteDocument = async (
 //////////////////////////////////////
 
 export const createNewServices = async (
-  graveyardId: string[] | undefined,
+  graveyardIds: string[] | undefined,
   companyId: string,
   name: string,
   description: string,
@@ -101,7 +101,7 @@ export const createNewServices = async (
   session?: ClientSession
 ): Promise<Services> => {
   const newServices = new ServicesModel({
-    graveyardId,
+    graveyardIds,
     companyId,
     name,
     description,
