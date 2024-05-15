@@ -53,18 +53,25 @@ export const updateServices = async (
   services: Partial<Services> & Document,
   session?: ClientSession
 ): Promise<Services> => {
-  const { id } = services;
+  const { id, companyId } = services;
 
   if (!id) throw new RequestError('Services Id must not be empty', 400);
+  if (!companyId) throw new RequestError('company Id must not be empty', 400);
 
-  const updatedServices = await findByIdAndUpdateServicesDocument(id, {
-    ...services,
-  });
+  const existingService = await findOneServices({ id, companyId });
 
-  if (updatedServices) {
-    return updatedServices;
+  if (existingService) {
+    const updatedServices = await findByIdAndUpdateServicesDocument(id, {
+      ...services,
+    });
+
+    if (updatedServices) {
+      return updatedServices;
+    } else {
+      throw new RequestError(`There is not ${id} service.`, 500);
+    }
   } else {
-    throw new RequestError(`There is not ${id} services.`, 500);
+    throw new RequestError(`You can't update ${id} service.`, 500);
   }
 };
 
