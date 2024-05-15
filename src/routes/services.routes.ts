@@ -9,9 +9,37 @@ import {
   deleteServices,
   setApprove,
   removeApprove,
+  getByGraveyardId,
+  getById,
+  getByCompanyId,
+  get,
 } from '../controllers/services.controller';
 
 const router = express.Router();
+
+router.get(
+  '/getAll',
+  errorWrap(verifyToken, 'Could not verify JWT token'),
+  errorWrap(get, 'Could not get services')
+);
+
+router.get(
+  '/getById/:serviceId',
+  errorWrap(verifyToken, 'Could not verify JWT token'),
+  errorWrap(getById, 'Could not get service')
+);
+
+router.get(
+  '/getByGraveyardId/:graveyardId',
+  errorWrap(verifyToken, 'Could not verify JWT token'),
+  errorWrap(getByGraveyardId, 'Could not get services')
+);
+
+router.get(
+  '/getByCompanyId/:companyId',
+  errorWrap(verifyToken, 'Could not verify JWT token'),
+  errorWrap(getByCompanyId, 'Could not get services')
+);
 
 router.post(
   '/create',

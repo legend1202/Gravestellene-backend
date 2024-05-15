@@ -58,8 +58,6 @@ export const getById = async (req: Request, res: Response) => {
 
   const session: ClientSession = req.session!;
 
-  // if (!name) throw new RequestError('gravestoneName is required', 400);
-
   const gravestone = await getGravestoneById(gravestoneId);
 
   return sendResponse(res, 200, 'Get Gravestone', gravestone);

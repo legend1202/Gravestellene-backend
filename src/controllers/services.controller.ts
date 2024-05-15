@@ -8,7 +8,47 @@ import {
   updateServices,
   addGraveyardId,
   removeGraveyardId,
+  getServicesByGraveyardId,
+  getServiceById,
+  getServicesByComapnyId,
+  getAllServices,
 } from '../services/services.services';
+
+export const get = async (req: Request, res: Response) => {
+  const services = await getAllServices();
+
+  return sendResponse(res, 200, 'Get All Services', services);
+};
+
+export const getById = async (req: Request, res: Response) => {
+  const { serviceId } = req.params;
+
+  const session: ClientSession = req.session!;
+
+  const service = await getServiceById(serviceId);
+
+  return sendResponse(res, 200, 'Get Service', service);
+};
+
+export const getByGraveyardId = async (req: Request, res: Response) => {
+  const { graveyardId } = req.params;
+
+  const session: ClientSession = req.session!;
+
+  const servervices = await getServicesByGraveyardId(graveyardId);
+
+  return sendResponse(res, 200, 'Get Services', servervices);
+};
+
+export const getByCompanyId = async (req: Request, res: Response) => {
+  const { companyId } = req.params;
+
+  const session: ClientSession = req.session!;
+
+  const servervices = await getServicesByComapnyId(companyId);
+
+  return sendResponse(res, 200, 'Get Services', servervices);
+};
 
 export const create = async (
   req: Request & { userId?: DecodedToken['userId'] },

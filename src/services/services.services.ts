@@ -163,6 +163,55 @@ export const deleteDocument = async (
   }
 };
 
+export const getAllServices = async (
+  session?: ClientSession
+): Promise<Services[] | null> => {
+  const services = await ServicesModel.find();
+
+  if (services) {
+    return services;
+  } else {
+    throw new RequestError(`Can't find the services`, 500);
+  }
+};
+
+export const getServiceById = async (
+  id: string,
+  session?: ClientSession
+): Promise<Services | null> => {
+  const existingService = await findOneServices({
+    id: id,
+  });
+
+  if (!id) throw new RequestError('Service Id must not be empty', 400);
+
+  if (existingService) {
+    return existingService;
+  } else {
+    throw new RequestError(`Can't find the service`, 500);
+  }
+};
+
+export const getServicesByComapnyId = async (companyId: string) => {
+  if (!companyId) throw new RequestError('Invalid fields. companyId', 400);
+
+  const filter = { companyId };
+
+  const services = await ServicesModel.find(filter, { _id: 0, __v: 0 });
+
+  return services;
+};
+
+export const getServicesByGraveyardId = async (graveyardId: string) => {
+  if (!graveyardId) throw new RequestError('Invalid fields. graveyardId', 400);
+
+  const filter = { graveyardIds: { $in: graveyardId } };
+
+  const services = await ServicesModel.find(filter, { _id: 0, __v: 0 });
+
+  return services;
+};
+
 //////////////////////////////////////
 
 export const createNewServices = async (
