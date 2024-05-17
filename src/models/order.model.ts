@@ -3,6 +3,7 @@ import { v4 as uuidv4 } from 'uuid';
 
 export interface Order extends Document {
   id: string;
+  graveyardId: string;
   gravestoneId: string;
   userId: string;
   servicesList: [string];
@@ -19,17 +20,16 @@ const OrderSchema = new Schema<Order>(
       required: true,
       unique: true,
     },
-    gravestoneId: {
+    graveyardId: {
       type: String,
       ref: 'Graveyard',
-      required: true,
-      unique: true,
+    },
+    gravestoneId: {
+      type: String,
+      ref: 'Gravestone',
     },
     userId: {
       type: String,
-      ref: 'User',
-      required: true,
-      unique: true,
     },
     servicesList: [
       {
