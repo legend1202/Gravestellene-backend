@@ -79,6 +79,7 @@ export const verifyCompany = async (
     const decoded = jwt.verify(token, secretKey) as DecodedToken;
     req.userId = decoded.userId;
     const existingUser = await findOneUser({ id: decoded.userId });
+    
 
     if (existingUser && existingUser.role === 'COMPANY') {
       next();

@@ -58,7 +58,7 @@ export const handleUserLogin = async (
       const secretKey: string = process.env.JWT_SECRET_KEY || '';
       const token = jwt.sign(
         {
-          id: existingUser.id,
+          userId: existingUser.id,
           name: existingUser.name,
           role: existingUser.role,
           email: existingUser.email,
@@ -71,7 +71,7 @@ export const handleUserLogin = async (
       );
       return {
         token,
-        id: existingUser.id,
+        userId: existingUser.id,
         email: existingUser.email,
         name: existingUser.name,
         role: existingUser.role,
