@@ -30,12 +30,6 @@ router.get(
 );
 
 router.get(
-  '/getByGraveyardId/:graveyardId',
-  errorWrap(verifyToken, 'Could not verify JWT token'),
-  errorWrap(getByGraveyardId, 'Could not get services')
-);
-
-router.get(
   '/getByCompanyId/:companyId',
   errorWrap(verifyToken, 'Could not verify JWT token'),
   errorWrap(getByCompanyId, 'Could not get services')

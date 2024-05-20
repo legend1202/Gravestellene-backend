@@ -86,7 +86,7 @@ export const setApprove = async (req: Request, res: Response) => {
   return sendResponse(
     res,
     200,
-    'Service Approved To Graveyard Successfully',
+    'Service Approved Successfully',
     updatedServices
   );
 };
@@ -99,7 +99,7 @@ export const removeApprove = async (req: Request, res: Response) => {
   return sendResponse(
     res,
     200,
-    'Service Removed From Graveyard Successfully',
+    'Service Deactivated Successfully',
     updatedServices
   );
 };

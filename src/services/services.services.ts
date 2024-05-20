@@ -14,8 +14,7 @@ export const handleServicesCreation = async (
   services: Partial<Services> & Document,
   session?: ClientSession
 ): Promise<Services> => {
-  const { graveyardIds, companyId, name, description, picture, price, unit } =
-    services;
+  const { companyId, name, description, picture, price, unit } = services;
 
   if (!companyId) throw new RequestError('Invalid fields. companyId', 400);
   if (!name) throw new RequestError('Invalid fields. name', 400);
@@ -36,7 +35,6 @@ export const handleServicesCreation = async (
   }
 
   const newServices = await createNewServices(
-    graveyardIds,
     companyId,
     name,
     description,
@@ -79,20 +77,15 @@ export const addGraveyardId = async (
   services: Partial<Services> & Document & { graveyardId: string },
   session?: ClientSession
 ): Promise<Services> => {
-  const { id, graveyardId } = services;
+  const { id } = services;
 
   if (!id) throw new RequestError('Services Id must not be empty', 400);
-  if (!graveyardId)
-    throw new RequestError('graveyard Id must not be empty', 400);
 
   const existingService = await findOneServices({ id });
 
   if (existingService) {
-    const graveyardIds = {
-      graveyardIds: add(existingService.graveyardIds, graveyardId),
-    };
     const updatedServices = await findByIdAndUpdateServicesDocument(id, {
-      ...graveyardIds,
+      approved: true,
     });
 
     if (updatedServices) {
@@ -115,17 +108,12 @@ export const removeGraveyardId = async (
   const { id, graveyardId } = services;
 
   if (!id) throw new RequestError('Services Id must not be empty', 400);
-  if (!graveyardId)
-    throw new RequestError('graveyard Id must not be empty', 400);
 
   const existingService = await findOneServices({ id });
 
   if (existingService) {
-    const graveyardIds = {
-      graveyardIds: remove(existingService.graveyardIds, graveyardId),
-    };
     const updatedServices = await findByIdAndUpdateServicesDocument(id, {
-      ...graveyardIds,
+      approved: false,
     });
 
     if (updatedServices) {
@@ -215,7 +203,6 @@ export const getServicesByGraveyardId = async (graveyardId: string) => {
 //////////////////////////////////////
 
 export const createNewServices = async (
-  graveyardIds: string[] | undefined,
   companyId: string,
   name: string,
   description: string,
@@ -225,13 +212,13 @@ export const createNewServices = async (
   session?: ClientSession
 ): Promise<Services> => {
   const newServices = new ServicesModel({
-    graveyardIds,
     companyId,
     name,
     description,
     picture,
     price,
     unit,
+    approved: false,
   });
 
   await newServices.save({ session });
