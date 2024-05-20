@@ -71,7 +71,7 @@ export const handleUserLogin = async (
       );
       return {
         token,
-        id: existingUser.id,
+        userId: existingUser.id,
         email: existingUser.email,
         name: existingUser.name,
         role: existingUser.role,
