@@ -58,7 +58,7 @@ export const handleUserLogin = async (
       const secretKey: string = process.env.JWT_SECRET_KEY || '';
       const token = jwt.sign(
         {
-          userId: existingUser.id,
+          id: existingUser.id,
           name: existingUser.name,
           role: existingUser.role,
           email: existingUser.email,
