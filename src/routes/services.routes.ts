@@ -13,6 +13,10 @@ import {
   getById,
   getByCompanyId,
   get,
+  sendServiceRequest,
+  getRequests,
+  getRequestsByGrave,
+  getRequestsByCompany,
 } from '../controllers/services.controller';
 
 const router = express.Router();
@@ -21,6 +25,24 @@ router.get(
   '/getAll',
   errorWrap(verifyToken, 'Could not verify JWT token'),
   errorWrap(get, 'Could not get services')
+);
+
+router.get(
+  '/getRequestsByGraveyardAndCompany/:graveyardId/:companyId',
+  errorWrap(verifyToken, 'Could not verify JWT token'),
+  errorWrap(getRequests, 'Could not get services')
+);
+
+router.get(
+  '/getRequestsByGraveyardId/:graveyardId',
+  errorWrap(verifyToken, 'Could not verify JWT token'),
+  errorWrap(getRequestsByGrave, 'Could not get services')
+);
+
+router.get(
+  '/getRequestsByCompanyId/:companyId',
+  errorWrap(verifyToken, 'Could not verify JWT token'),
+  errorWrap(getRequestsByCompany, 'Could not get services')
 );
 
 router.get(
@@ -49,6 +71,16 @@ router.post(
     `Company user can create only. This user can't create services`
   ),
   errorWrap(create, 'Could not create services')
+);
+
+router.post(
+  '/request',
+  errorWrap(verifyToken, 'Could not verify JWT token'),
+  errorWrap(
+    verifyCompany,
+    `Company user can request only. This user can't send service request`
+  ),
+  errorWrap(sendServiceRequest, 'Could not create services')
 );
 
 router.put(

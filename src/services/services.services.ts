@@ -9,6 +9,8 @@ import { Services, ServicesModel } from '../models/services.model';
 import { RequestError } from '../utils/globalErrorHandler';
 import { DecodedToken } from '../types/req.type';
 import { add, remove } from '../utils/common';
+import { Request, RequestModel } from '../models/request.model';
+import { GraveyardModel } from '../models/graveyard.model';
 
 export const handleServicesCreation = async (
   services: Partial<Services> & Document,
@@ -200,6 +202,173 @@ export const getServicesByGraveyardId = async (graveyardId: string) => {
   return services;
 };
 
+export const serviceRequest = async (
+  request: Partial<Request>,
+  session?: ClientSession
+): Promise<any> => {
+  const { fellesraadId, graveyardId, serviceId, companyId } = request;
+  if (!fellesraadId)
+    throw new RequestError('Fellesraad Id must not be empty', 400);
+  if (!graveyardId)
+    throw new RequestError('Graveyard Id must not be empty', 400);
+  if (!serviceId) throw new RequestError('Service Id must not be empty', 400);
+  if (!companyId) throw new RequestError('Company Id must not be empty', 400);
+
+  const existingService = await findOneServices({ id: serviceId });
+  if (existingService && existingService.approved) {
+    const existingRequest = await findOneRequest({
+      fellesraadId,
+      graveyardId,
+      serviceId,
+      companyId,
+    });
+
+    if (existingRequest) {
+      throw new RequestError(`This request is exist`, 500);
+    } else {
+      try {
+        const newRequest = await createNewRequest(
+          fellesraadId,
+          graveyardId,
+          serviceId,
+          companyId,
+          session
+        );
+        return newRequest;
+      } catch (e: any) {
+        throw new RequestError(`${e.errmsg}`, 500);
+      }
+    }
+  } else {
+    throw new RequestError(`This service didn't approved by Admin yet.`, 500);
+  }
+};
+
+export const getAllRequests = async (
+  graveyardId: string,
+  companyId: string,
+  session?: ClientSession
+) => {
+  try {
+    const result = await RequestModel.aggregate([
+      {
+        $match: {
+          graveyardId,
+          companyId,
+        },
+      },
+      {
+        $lookup: {
+          from: ServicesModel.collection.name,
+          localField: 'serviceId',
+          foreignField: 'id',
+          as: 'serviceDetails',
+        },
+      },
+      {
+        $lookup: {
+          from: GraveyardModel.collection.name,
+          localField: 'graveyardId',
+          foreignField: 'id',
+          as: 'graveyardDetails',
+        },
+      },
+      {
+        $unwind: '$serviceDetails',
+      },
+      {
+        $unwind: '$graveyardDetails',
+      },
+    ]);
+
+    return result;
+  } catch (error) {
+    throw new RequestError(`Can't find the requests`, 500);
+  }
+};
+
+export const getRequestsByGraveyardId = async (
+  graveyardId: string,
+  session?: ClientSession
+) => {
+  try {
+    const result = await RequestModel.aggregate([
+      {
+        $match: {
+          graveyardId,
+        },
+      },
+      {
+        $lookup: {
+          from: ServicesModel.collection.name,
+          localField: 'serviceId',
+          foreignField: 'id',
+          as: 'serviceDetails',
+        },
+      },
+      {
+        $lookup: {
+          from: GraveyardModel.collection.name,
+          localField: 'graveyardId',
+          foreignField: 'id',
+          as: 'graveyardDetails',
+        },
+      },
+      {
+        $unwind: '$serviceDetails',
+      },
+      {
+        $unwind: '$graveyardDetails',
+      },
+    ]);
+
+    return result;
+  } catch (error) {
+    throw new RequestError(`Can't find the requests`, 500);
+  }
+};
+
+export const getRequestsByCompanyId = async (
+  companyId: string,
+  session?: ClientSession
+) => {
+  try {
+    const result = await RequestModel.aggregate([
+      {
+        $match: {
+          companyId,
+        },
+      },
+      {
+        $lookup: {
+          from: ServicesModel.collection.name,
+          localField: 'serviceId',
+          foreignField: 'id',
+          as: 'serviceDetails',
+        },
+      },
+      {
+        $lookup: {
+          from: GraveyardModel.collection.name,
+          localField: 'graveyardId',
+          foreignField: 'id',
+          as: 'graveyardDetails',
+        },
+      },
+      {
+        $unwind: '$serviceDetails',
+      },
+      {
+        $unwind: '$graveyardDetails',
+      },
+    ]);
+
+    return result;
+  } catch (error) {
+    throw new RequestError(`Can't find the requests`, 500);
+  }
+};
+
 //////////////////////////////////////
 
 export const createNewServices = async (
@@ -225,12 +394,39 @@ export const createNewServices = async (
   return newServices;
 };
 
+export const createNewRequest = async (
+  fellesraadId: string,
+  graveyardId: string,
+  serviceId: string,
+  companyId: string,
+  session?: ClientSession
+): Promise<Request> => {
+  const newRequest = new RequestModel({
+    fellesraadId,
+    graveyardId,
+    serviceId,
+    companyId,
+    approved: false,
+  });
+
+  await newRequest.save({ session });
+  return newRequest;
+};
+
 export async function findOneServices(
   filter?: FilterQuery<Services>,
   projection?: ProjectionType<Services>,
   options?: QueryOptions<Services>
 ): Promise<Services | null> {
   return await ServicesModel.findOne(filter, projection, options);
+}
+
+export async function findOneRequest(
+  filter?: FilterQuery<Services>,
+  projection?: ProjectionType<Services>,
+  options?: QueryOptions<Services>
+): Promise<Request | null> {
+  return await RequestModel.findOne(filter, projection, options);
 }
 
 export const findByIdAndUpdateServicesDocument = async (

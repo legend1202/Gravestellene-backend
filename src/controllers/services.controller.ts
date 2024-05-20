@@ -12,6 +12,10 @@ import {
   getServiceById,
   getServicesByComapnyId,
   getAllServices,
+  serviceRequest,
+  getAllRequests,
+  getRequestsByGraveyardId,
+  getRequestsByCompanyId,
 } from '../services/services.services';
 import { RequestError } from '../utils/globalErrorHandler';
 
@@ -41,10 +45,12 @@ export const getByGraveyardId = async (req: Request, res: Response) => {
   return sendResponse(res, 200, 'Get Services', servervices);
 };
 
-export const getByCompanyId = async (req: Request & { userId?: DecodedToken['userId'] }, res: Response) => {
-
+export const getByCompanyId = async (
+  req: Request & { userId?: DecodedToken['userId'] },
+  res: Response
+) => {
   const userId = req.userId;
-  if(!userId) {
+  if (!userId) {
     throw new RequestError('companyId is required', 400);
   }
 
@@ -68,6 +74,21 @@ export const create = async (
   );
 
   return sendResponse(res, 200, 'Created Services', newGraveyard);
+};
+
+export const sendServiceRequest = async (
+  req: Request & { userId?: DecodedToken['userId'] },
+  res: Response
+) => {
+  const { request } = req.body;
+  const session: ClientSession = req.session!;
+
+  const newRequest = await serviceRequest(
+    { ...request, companyId: req.userId },
+    session
+  );
+
+  return sendResponse(res, 200, 'Created Service Request', newRequest);
 };
 
 export const update = async (req: Request, res: Response) => {
@@ -120,4 +141,25 @@ export const deleteServices = async (req: Request, res: Response) => {
     'Services Deleted Successfully',
     deletedServices
   );
+};
+
+export const getRequests = async (req: Request, res: Response) => {
+  const { graveyardId, companyId } = req.params;
+  const services = await getAllRequests(graveyardId, companyId);
+
+  return sendResponse(res, 200, 'Get Requests', services);
+};
+
+export const getRequestsByGrave = async (req: Request, res: Response) => {
+  const { graveyardId } = req.params;
+  const services = await getRequestsByGraveyardId(graveyardId);
+
+  return sendResponse(res, 200, 'Get Requests', services);
+};
+
+export const getRequestsByCompany = async (req: Request, res: Response) => {
+  const { companyId } = req.params;
+  const services = await getRequestsByCompanyId(companyId);
+
+  return sendResponse(res, 200, 'Get Requests', services);
 };
