@@ -13,6 +13,7 @@ import {
   getServicesByComapnyId,
   getAllServices,
 } from '../services/services.services';
+import { RequestError } from '../utils/globalErrorHandler';
 
 export const get = async (req: Request, res: Response) => {
   const services = await getAllServices();
@@ -40,12 +41,16 @@ export const getByGraveyardId = async (req: Request, res: Response) => {
   return sendResponse(res, 200, 'Get Services', servervices);
 };
 
-export const getByCompanyId = async (req: Request, res: Response) => {
-  const { companyId } = req.params;
+export const getByCompanyId = async (req: Request & { userId?: DecodedToken['userId'] }, res: Response) => {
+
+  const userId = req.userId;
+  if(!userId) {
+    throw new RequestError('companyId is required', 400);
+  }
 
   const session: ClientSession = req.session!;
 
-  const servervices = await getServicesByComapnyId(companyId);
+  const servervices = await getServicesByComapnyId(userId);
 
   return sendResponse(res, 200, 'Get Services', servervices);
 };
