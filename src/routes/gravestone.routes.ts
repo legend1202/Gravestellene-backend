@@ -15,7 +15,7 @@ import { verifyAdmin, verifyFellesraad } from '../middleware/role.middleware';
 
 const router = express.Router();
 
-router.post('/getGravestones', errorWrap(get, 'Could not get gravestones'));
+router.get('/getGravestones', errorWrap(get, 'Could not get gravestones'));
 router.get(
   '/getByGraveyardId/:graveyardId',
   errorWrap(verifyToken, 'Could not verify JWT token'),

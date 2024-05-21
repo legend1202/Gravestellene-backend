@@ -13,12 +13,12 @@ import { DateRange } from '../types/req.type';
 import moment from 'moment';
 
 export const getGravestonesByAdvancedSearch = async (
-  name: string,
-  birthday: DateRange,
-  deceasedDate: DateRange,
-  quarter: string,
-  graveSite: string,
-  graveSiteNumber: string,
+  name: any,
+  birthday: any,
+  deceasedDate: any,
+  quarter: any,
+  graveSite: any,
+  graveSiteNumber: any,
   session?: ClientSession
 ) => {
   let filter = {};
