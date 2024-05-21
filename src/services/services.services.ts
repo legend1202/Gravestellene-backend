@@ -369,6 +369,36 @@ export const getRequestsByCompanyId = async (
   }
 };
 
+export const approveRequest = async (
+  requestId: string,
+  session?: ClientSession
+): Promise<Request> => {
+  if (!requestId) throw new RequestError('Request Id must not be empty', 400);
+
+  const existingService = await findOneRequest({ requestId });
+
+  if (existingService) {
+    const updatedRequest = await RequestModel.findOneAndUpdate(
+      { id: requestId },
+      {
+        approved: true,
+      },
+      { returnDocument: 'after' }
+    );
+
+    if (updatedRequest) {
+      return updatedRequest;
+    } else {
+      throw new RequestError(
+        `Update Failed. There is not ${requestId} request.`,
+        500
+      );
+    }
+  } else {
+    throw new RequestError(`There is not ${requestId} request.`, 500);
+  }
+};
+
 //////////////////////////////////////
 
 export const createNewServices = async (

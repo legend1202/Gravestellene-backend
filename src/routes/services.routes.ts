@@ -17,6 +17,7 @@ import {
   getRequests,
   getRequestsByGrave,
   getRequestsByCompany,
+  setApproveRequest,
 } from '../controllers/services.controller';
 
 const router = express.Router();
@@ -87,6 +88,12 @@ router.put(
   '/update',
   errorWrap(verifyToken, 'Could not verify JWT token'),
   errorWrap(update, 'Could not update services')
+);
+
+router.put(
+  '/setApproveRequest',
+  errorWrap(verifyToken, 'Could not verify JWT token'),
+  errorWrap(setApproveRequest, 'Could not update services')
 );
 
 router.put(

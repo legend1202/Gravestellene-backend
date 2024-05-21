@@ -16,6 +16,7 @@ import {
   getAllRequests,
   getRequestsByGraveyardId,
   getRequestsByCompanyId,
+  approveRequest,
 } from '../services/services.services';
 import { RequestError } from '../utils/globalErrorHandler';
 
@@ -162,4 +163,11 @@ export const getRequestsByCompany = async (req: Request, res: Response) => {
   const services = await getRequestsByCompanyId(companyId);
 
   return sendResponse(res, 200, 'Get Requests', services);
+};
+
+export const setApproveRequest = async (req: Request, res: Response) => {
+  const { requestId } = req.body;
+  const request = await approveRequest(requestId);
+
+  return sendResponse(res, 200, 'Request Approved Successfully', request);
 };
