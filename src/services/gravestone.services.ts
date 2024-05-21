@@ -16,9 +16,7 @@ export const getGravestonesByAdvancedSearch = async (
   name: any,
   birthday: any,
   deceasedDate: any,
-  quarter: any,
   graveSite: any,
-  graveSiteNumber: any,
   session?: ClientSession
 ) => {
   let filter = {};
@@ -29,9 +27,7 @@ export const getGravestonesByAdvancedSearch = async (
     !birthday.end &&
     !deceasedDate.start &&
     !deceasedDate.end &&
-    !quarter &&
-    !graveSite &&
-    !graveSiteNumber
+    !graveSite
   )
     return [];
 
@@ -39,16 +35,8 @@ export const getGravestonesByAdvancedSearch = async (
     filter = { ...filter, name: new RegExp(name, 'i') };
   }
 
-  if (quarter) {
-    filter = { ...filter, quarter };
-  }
-
   if (graveSite) {
     filter = { ...filter, graveSite };
-  }
-
-  if (graveSiteNumber) {
-    filter = { ...filter, graveSiteNumber };
   }
 
   filter = { ...filter, approved: true };

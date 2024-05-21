@@ -14,19 +14,15 @@ import {
 import { DecodedToken } from '../types/req.type';
 
 export const get = async (req: Request, res: Response) => {
-  const { name, birthday, deceasedDate, quarter, graveSite, graveSiteNumber } =
-    req.query;
+  const { name, birthday, deceasedDate, graveSite } = req.query;
   const session: ClientSession = req.session!;
 
   // if (!name) throw new RequestError('gravestoneName is required', 400);
-  console.log(req);
   const gravestones = await getGravestonesByAdvancedSearch(
     name,
     birthday,
     deceasedDate,
-    quarter,
     graveSite,
-    graveSiteNumber,
     session
   );
 
