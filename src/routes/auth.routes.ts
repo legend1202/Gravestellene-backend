@@ -13,6 +13,7 @@ import { verifyAdmin } from '../middleware/role.middleware';
 const router = express.Router();
 
 router.post('/register', errorWrap(create, 'Could not create user'));
+
 router.post(
   '/login',
   withTransaction(errorWrap(login, 'Could not login user'))

@@ -20,7 +20,6 @@ export const getGravestonesByAdvancedSearch = async (
   session?: ClientSession
 ) => {
   let filter = {};
-
   if (
     !name &&
     !birthday.start &&
@@ -45,32 +44,26 @@ export const getGravestonesByAdvancedSearch = async (
 
   if (birthday.start || birthday.end) {
     gravestones = gravestones.filter((stone) => {
-      const stoneBirthday = moment(stone.birthday, 'DD/MM/YYYY');
+      const stoneBirthday = moment(stone.birthday);
       return (
         (!birthday.start ||
-          moment(birthday.start, 'DD/MM/YYYY').isSameOrBefore(stoneBirthday)) &&
-        (!birthday.end ||
-          moment(birthday.end, 'DD/MM/YYYY').isSameOrAfter(stoneBirthday))
+          moment(birthday.start).isSameOrBefore(stoneBirthday)) &&
+        (!birthday.end || moment(birthday.end).isSameOrAfter(stoneBirthday))
       );
     });
   }
 
   if (deceasedDate.start || deceasedDate.end) {
     gravestones = gravestones.filter((stone) => {
-      const stoneDeceasedDate = moment(stone.deceasedDate, 'DD/MM/YYYY');
+      const stoneDeceasedDate = moment(stone.deceasedDate);
       return (
         (!deceasedDate.start ||
-          moment(deceasedDate.start, 'DD/MM/YYYY').isSameOrBefore(
-            stoneDeceasedDate
-          )) &&
+          moment(deceasedDate.start).isSameOrBefore(stoneDeceasedDate)) &&
         (!deceasedDate.end ||
-          moment(deceasedDate.end, 'DD/MM/YYYY').isSameOrAfter(
-            stoneDeceasedDate
-          ))
+          moment(deceasedDate.end).isSameOrAfter(stoneDeceasedDate))
       );
     });
   }
-
   return gravestones;
 };
 
