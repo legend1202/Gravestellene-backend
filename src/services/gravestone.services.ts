@@ -38,7 +38,8 @@ export const getGravestonesByAdvancedSearch = async (
     filter = { ...filter, graveSite };
   }
 
-  filter = { ...filter, approved: true };
+  // filter = { ...filter, approved: true };
+  filter = { ...filter };
 
   let gravestones = await GravestoneModel.find(filter, { _id: 0, __v: 0 });
 
