@@ -2,7 +2,11 @@ import { Request, Response } from 'express';
 import { ClientSession } from 'mongoose';
 import { sendResponse } from '../utils/response.utils';
 import { DecodedToken } from '../types/req.type';
-import { getOrders, handleOrderCreation } from '../services/order.services';
+import {
+  getOrders,
+  handleOrderCreation,
+  setApprove,
+} from '../services/order.services';
 
 export const create = async (
   req: Request & { userId?: DecodedToken['userId'] },
@@ -23,4 +27,12 @@ export const get = async (req: Request, res: Response) => {
   const gravestones = await getOrders();
 
   return sendResponse(res, 200, 'Get Orders', gravestones);
+};
+
+export const approve = async (req: Request, res: Response) => {
+  const { order } = req.body;
+
+  const newOrder = await setApprove(order);
+
+  return sendResponse(res, 200, 'Order approved', newOrder);
 };

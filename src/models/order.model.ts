@@ -8,6 +8,7 @@ export interface Order extends Document {
   userId: string;
   servicesList: [string];
   ssn: string;
+  approved: Boolean;
   createdAt: Date;
   updateAt: Date;
 }
@@ -38,6 +39,7 @@ const OrderSchema = new Schema<Order>(
       },
     ],
     ssn: { type: String },
+    approved: { type: Boolean },
   },
   {
     timestamps: true,

@@ -53,6 +53,25 @@ export const getOrders = async () => {
   return orders;
 };
 
+export const setApprove = async (
+  graveyard: Partial<Order> & Document,
+  session?: ClientSession
+): Promise<Order> => {
+  const { id, approved } = graveyard;
+
+  if (!id) throw new RequestError('Order Id must not be empty', 400);
+
+  const updatedGraveyard = await findByIdAndUpdateOrderDocument(id, {
+    approved,
+  });
+
+  if (updatedGraveyard) {
+    return updatedGraveyard;
+  } else {
+    throw new RequestError(`There is not ${id} order.`, 500);
+  }
+};
+
 /////////////////////////////////////////////////////////
 
 export async function findOneOrder(
@@ -76,9 +95,21 @@ export const createNewOrder = async (
     gravestoneId,
     userId,
     servicesList,
+    approved: false,
     ssn,
   });
 
   await newOrder.save({ session });
   return newOrder;
+};
+
+export const findByIdAndUpdateOrderDocument = async (
+  id: string,
+  update: UpdateQuery<Order>,
+  options?: QueryOptions<Order>
+) => {
+  return await OrderModel.findOneAndUpdate({ id }, update, {
+    ...options,
+    returnDocument: 'after',
+  });
 };
