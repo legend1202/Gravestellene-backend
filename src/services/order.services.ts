@@ -8,6 +8,10 @@ import {
 
 import { RequestError } from '../utils/globalErrorHandler';
 import { Order, OrderModel } from '../models/order.model';
+import { GravestoneModel } from '../models/gravestone.model';
+import { GraveyardModel } from '../models/graveyard.model';
+import { UserModel } from '../models/user.model';
+import { ServicesModel } from '../models/services.model';
 
 export const handleOrderCreation = async (
   order: Partial<Order> & Document,
@@ -48,7 +52,49 @@ export const handleOrderCreation = async (
 };
 
 export const getOrders = async () => {
-  const orders = await OrderModel.find({}, { _id: 0, __v: 0 });
+  const orders = await OrderModel.aggregate([
+    {
+      $lookup: {
+        from: GravestoneModel.collection.name,
+        localField: 'gravestoneId',
+        foreignField: 'id',
+        as: 'gravestoneDetails',
+      },
+    },
+    { $unwind: '$gravestoneDetails' },
+    {
+      $lookup: {
+        from: GraveyardModel.collection.name,
+        localField: 'graveyardId',
+        foreignField: 'id',
+        as: 'graveyardDetails',
+      },
+    },
+    { $unwind: '$graveyardDetails' },
+    {
+      $lookup: {
+        from: UserModel.collection.name,
+        localField: 'userId',
+        foreignField: 'id',
+        as: 'userDetails',
+      },
+    },
+    { $unwind: '$userDetails' },
+    {
+      $lookup: {
+        from: ServicesModel.collection.name,
+        let: { servicesList: '$servicesList' },
+        pipeline: [
+          {
+            $match: {
+              $expr: { $in: ['$id', '$$servicesList'] },
+            },
+          },
+        ],
+        as: 'serviceDetails',
+      },
+    },
+  ]);
 
   return orders;
 };
