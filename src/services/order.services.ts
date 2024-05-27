@@ -47,6 +47,12 @@ export const handleOrderCreation = async (
   return newGraveyard;
 };
 
+export const getOrders = async () => {
+  const orders = await OrderModel.find({}, { _id: 0, __v: 0 });
+
+  return orders;
+};
+
 /////////////////////////////////////////////////////////
 
 export async function findOneOrder(
