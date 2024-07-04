@@ -226,3 +226,14 @@ export async function findGraveyards(
 ): Promise<Graveyard[] | null> {
   return await GraveyardModel.find(filter, projection, options);
 }
+
+export const getAllGraveyards = async (
+): Promise<Graveyard[] | null> => {
+  try {
+    const filter = { approved: true };
+    const graveyards = await findGraveyards(filter, { _id: 0, __v: 0 });
+    return graveyards;
+  } catch (error) {
+    throw new RequestError(`You can't see graveyards`, 500);
+  }
+};

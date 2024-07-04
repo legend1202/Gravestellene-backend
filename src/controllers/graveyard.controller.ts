@@ -7,6 +7,7 @@ import {
   setApprove,
   deleteDocument,
   getGraveyardsByToken,
+  getAllGraveyards,
   getGraveyardById,
 } from '../services/graveyard.services';
 import { DecodedToken } from '../types/req.type';
@@ -80,4 +81,14 @@ export const getById = async (
   const graveyard = await getGraveyardById(graveyardId);
 
   return sendResponse(res, 200, 'Get Graveyard By Id', graveyard);
+};
+
+export const getAllGraveyard = async (
+  req: Request & { userId?: DecodedToken['userId'] },
+  res: Response
+) => {
+
+  const graveyards = await getAllGraveyards();
+
+  return sendResponse(res, 200, 'Get Graveyards', graveyards);
 };

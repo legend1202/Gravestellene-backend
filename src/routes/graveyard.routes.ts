@@ -7,6 +7,7 @@ import {
   update,
   deleteGraveyard,
   getByToken,
+  getAllGraveyard,
   getById,
 } from '../controllers/graveyard.controller';
 import { errorWrap } from '../utils/error.utils';
@@ -58,6 +59,12 @@ router.get(
   '/getByToken',
   errorWrap(verifyToken, 'Could not verify JWT token'),
   errorWrap(getByToken, 'Could not get graveyards')
+);
+
+router.get(
+  '/getAllGraveyard',
+  // errorWrap(verifyToken, 'Could not verify JWT token'),
+  errorWrap(getAllGraveyard, 'Could not get graveyards')
 );
 
 router.get(
