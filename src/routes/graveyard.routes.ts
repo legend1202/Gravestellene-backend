@@ -69,7 +69,7 @@ router.get(
 
 router.get(
   '/getById/:graveyardId',
-  errorWrap(verifyToken, 'Could not verify JWT token'),
+  // errorWrap(verifyToken, 'Could not verify JWT token'),
   errorWrap(getById, 'Could not get graveyard')
 );
 

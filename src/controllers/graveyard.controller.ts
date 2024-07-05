@@ -77,7 +77,6 @@ export const getById = async (
   res: Response
 ) => {
   const { graveyardId } = req.params;
-
   const graveyard = await getGraveyardById(graveyardId);
 
   return sendResponse(res, 200, 'Get Graveyard By Id', graveyard);
