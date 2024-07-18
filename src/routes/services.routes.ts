@@ -36,7 +36,7 @@ router.get(
 
 router.get(
   '/getRequestsByGraveyardId/:graveyardId',
-  errorWrap(verifyToken, 'Could not verify JWT token'),
+  // errorWrap(verifyToken, 'Could not verify JWT token'),
   errorWrap(getRequestsByGrave, 'Could not get services')
 );
 
@@ -54,7 +54,7 @@ router.get(
 
 router.get(
   '/getByGraveyardId/:graveyardId',
-  // errorWrap(verifyToken, 'Could not verify JWT token'),
+  errorWrap(verifyToken, 'Could not verify JWT token'),
   errorWrap(getByGraveyardId, 'Could not get services')
 );
 

@@ -11,6 +11,7 @@ import { DecodedToken } from '../types/req.type';
 import { add, remove } from '../utils/common';
 import { Request, RequestModel } from '../models/request.model';
 import { GraveyardModel } from '../models/graveyard.model';
+import { UserModel } from '../models/user.model';
 
 export const handleServicesCreation = async (
   services: Partial<Services> & Document,
@@ -315,10 +316,21 @@ export const getRequestsByGraveyardId = async (
         },
       },
       {
+        $lookup: {
+          from: UserModel.collection.name,
+          localField: 'companyId',
+          foreignField: 'id',
+          as: 'companyDetails',
+        },
+      },
+      {
         $unwind: '$serviceDetails',
       },
       {
         $unwind: '$graveyardDetails',
+      },
+      {
+        $unwind: '$companyDetails',
       },
     ]);
 

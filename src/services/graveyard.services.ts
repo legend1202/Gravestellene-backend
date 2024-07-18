@@ -189,7 +189,7 @@ export const getGraveyardById = async (
   session?: ClientSession
 ): Promise<Graveyard | null> => {
   const existingGraveyard = await findOneGraveyard({
-    id: id,
+    name: id,
   });
 
   if (!id) throw new RequestError('Graveyard Id must not be empty', 400);
