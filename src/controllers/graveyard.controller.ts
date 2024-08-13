@@ -9,6 +9,7 @@ import {
   getGraveyardsByToken,
   getAllGraveyards,
   getGraveyardById,
+  handleSeed
 } from '../services/graveyard.services';
 import { DecodedToken } from '../types/req.type';
 
@@ -26,6 +27,19 @@ export const create = async (
 
   return sendResponse(res, 200, 'Created Graveyard', newGraveyard);
 };
+
+export const seed = async (
+  req: Request & { userId?: DecodedToken['userId'] },
+  res: Response
+) => {
+  
+
+  const newGraveyard = await handleSeed();
+
+  return sendResponse(res, 200, 'Created Graveyard', newGraveyard);
+};
+
+
 
 export const approve = async (req: Request, res: Response) => {
   const { graveyard } = req.body;

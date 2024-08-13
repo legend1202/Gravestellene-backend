@@ -9,6 +9,7 @@ import {
   getByToken,
   getAllGraveyard,
   getById,
+  seed
 } from '../controllers/graveyard.controller';
 import { errorWrap } from '../utils/error.utils';
 import { verifyAdmin, verifyFellesraad } from '../middleware/role.middleware';
@@ -71,6 +72,12 @@ router.get(
   '/getById/:graveyardId',
   // errorWrap(verifyToken, 'Could not verify JWT token'),
   errorWrap(getById, 'Could not get graveyard')
+);
+
+router.post(
+  '/seed',
+  // errorWrap(verifyToken, 'Could not verify JWT token'),
+  errorWrap(seed, 'Could not get graveyard')
 );
 
 export default router;

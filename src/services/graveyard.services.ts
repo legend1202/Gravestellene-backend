@@ -5,6 +5,9 @@ import {
   QueryOptions,
   UpdateQuery,
 } from 'mongoose';
+import fs from 'fs';
+import { parse, } from 'csv-parse';
+import iconv from 'iconv-lite';
 import { Graveyard, GraveyardModel } from '../models/graveyard.model';
 import { RequestError } from '../utils/globalErrorHandler';
 import { findOneUser } from './user.services';
@@ -50,6 +53,60 @@ export const handleGraveyardCreation = async (
   );
 
   return newGraveyard;
+};
+
+export const handleSeed = async (session?: ClientSession) => {
+  console.log('=====Start Seed Graveyard=====');
+  let index = 0;
+
+  const stream = fs.createReadStream('./graveyards.csv')
+    .pipe(iconv.decodeStream('ISO-8859-1')) // Replace with the correct encoding
+    .pipe(iconv.encodeStream('utf8'))
+    .pipe(parse())
+    .on('data', async (row) => {
+      console.log(row);
+      index++;
+      const newGraveyard = new GraveyardModel({
+        fellesraadId: 'a40945cd-d5c1-49bb-bf75-2e580f358b0b',
+        name: row[0],
+        location: '',
+        picture: '',
+        content: '',
+        newsLink: '',
+        forecastLink: '',
+        approved: true,
+      });
+      await newGraveyard.save({ session });
+    })
+    .on('end', () => {
+      console.log(index + 'counts added');
+    });
+
+
+  // fs.createReadStream('./personinfo.csv')
+  //   .pipe(parse({ delimiter: ',', encoding: 'utf8', }))
+  //   .on('data', async function (row) {
+  //     console.log(row);
+  //     // index++;
+  //     // const newGraveyard = new GraveyardModel({
+  //     //   fellesraadId: '249b9be7-001b-4c57-9e13-16efd3f53637',
+  //     //   name: row[0],
+  //     //   location: '',
+  //     //   picture: '',
+  //     //   content: '',
+  //     //   newsLink: '',
+  //     //   forecastLink: '',
+  //     //   approved: false,
+  //     // });
+
+  //     // await newGraveyard.save({ session });
+  //   })
+  //   .on('error', function (error) {
+  //     console.log(error.message);
+  //   })
+  //   .on('end', function () {
+  //     console.log(index + 'counts added');
+  //   });
 };
 
 export const handleGraveyardUpdate = async (
@@ -227,8 +284,7 @@ export async function findGraveyards(
   return await GraveyardModel.find(filter, projection, options);
 }
 
-export const getAllGraveyards = async (
-): Promise<Graveyard[] | null> => {
+export const getAllGraveyards = async (): Promise<Graveyard[] | null> => {
   try {
     const filter = { approved: true };
     const graveyards = await findGraveyards(filter, { _id: 0, __v: 0 });
