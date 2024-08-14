@@ -77,7 +77,7 @@ router.get(
 router.post(
   '/seed',
   // errorWrap(verifyToken, 'Could not verify JWT token'),
-  errorWrap(seed, 'Could not get graveyard')
+  errorWrap(seed, 'Could not seed graveyard')
 );
 
 export default router;

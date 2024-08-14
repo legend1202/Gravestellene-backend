@@ -9,6 +9,7 @@ import {
   deleteGravestone,
   getByGraveyardId,
   getById,
+  seed
 } from '../controllers/gravestone.controller';
 import { errorWrap } from '../utils/error.utils';
 import { verifyAdmin, verifyFellesraad } from '../middleware/role.middleware';
@@ -60,6 +61,12 @@ router.delete(
     `Fellesraad can delete only. This user can't delete gravestone`
   ),
   errorWrap(deleteGravestone, 'Could not delete gravestone')
+);
+
+router.get(
+  '/seed',
+  // errorWrap(verifyToken, 'Could not verify JWT token'),
+  errorWrap(seed, 'Could not seed graveyard')
 );
 
 export default router;

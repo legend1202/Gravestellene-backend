@@ -5,10 +5,19 @@ export interface Gravestone extends Document {
   id: string;
   graveyardId: string;
   name: string;
+  firstName: string;
+  lastName: string;
+  churchNumber: string;
+  field: string;
+  row: string;
+  place: string;
   gender: 'MAN' | 'WOMEN';
   birthday: string;
   deceasedDate: string;
   buriedDate: string;
+  ageOnDeath: string;
+  burriedWith: string;
+  peaceTo: string;
   quarter: string;
   graveSite: string;
   homeTown: string;
@@ -30,10 +39,19 @@ const GravestoneSchema = new Schema<Gravestone>(
       type: String,
     },
     name: { type: String },
+    firstName: { type: String },
+    lastName: { type: String },
+    churchNumber: { type: String },
+    field: { type: String },
+    row: { type: String },
+    place: { type: String },
     gender: { type: String },
     birthday: { type: String },
     deceasedDate: { type: String },
     buriedDate: { type: String },
+    burriedWith: { type: String },
+    ageOnDeath: { type: String },
+    peaceTo: { type: String },
     quarter: { type: String },
     graveSite: { type: String },
     homeTown: { type: String },

@@ -83,30 +83,7 @@ export const handleSeed = async (session?: ClientSession) => {
     });
 
 
-  // fs.createReadStream('./personinfo.csv')
-  //   .pipe(parse({ delimiter: ',', encoding: 'utf8', }))
-  //   .on('data', async function (row) {
-  //     console.log(row);
-  //     // index++;
-  //     // const newGraveyard = new GraveyardModel({
-  //     //   fellesraadId: '249b9be7-001b-4c57-9e13-16efd3f53637',
-  //     //   name: row[0],
-  //     //   location: '',
-  //     //   picture: '',
-  //     //   content: '',
-  //     //   newsLink: '',
-  //     //   forecastLink: '',
-  //     //   approved: false,
-  //     // });
 
-  //     // await newGraveyard.save({ session });
-  //   })
-  //   .on('error', function (error) {
-  //     console.log(error.message);
-  //   })
-  //   .on('end', function () {
-  //     console.log(index + 'counts added');
-  //   });
 };
 
 export const handleGraveyardUpdate = async (

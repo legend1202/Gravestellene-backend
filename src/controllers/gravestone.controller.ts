@@ -10,8 +10,20 @@ import {
   setApprove,
   getGravestonesByGraveyardId,
   getGravestoneById,
+  handleSeed
 } from '../services/gravestone.services';
 import { DecodedToken } from '../types/req.type';
+
+export const seed = async (
+  req: Request & { userId?: DecodedToken['userId'] },
+  res: Response
+) => {
+
+
+  const newGraveyard = await handleSeed();
+
+  return sendResponse(res, 200, 'Created Graveyard', newGraveyard);
+};
 
 export const get = async (req: Request, res: Response) => {
   const { name, birthday, deceasedDate, graveSite } = req.query;

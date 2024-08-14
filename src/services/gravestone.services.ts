@@ -5,12 +5,78 @@ import {
   QueryOptions,
   UpdateQuery,
 } from 'mongoose';
+import fs from 'fs';
+import { parse, } from 'csv-parse';
+import iconv from 'iconv-lite';
 import { GravestoneModel, Gravestone } from '../models/gravestone.model';
 import { RequestError } from '../utils/globalErrorHandler';
 import { isValidDate } from '../utils/validate.utils';
 import { Gender } from '../utils/constants';
 import { DateRange } from '../types/req.type';
 import moment from 'moment';
+import { findOneGraveyard } from './graveyard.services';
+
+export const handleSeed = async (session?: ClientSession) => {
+  console.log('=====Start Seed Graveyard=====');
+  let index = 0;
+  try {
+    const stream = fs.createReadStream('./person info1.csv')
+      .pipe(iconv.decodeStream('ISO-8859-1')) // Replace with the correct encoding
+      .pipe(iconv.encodeStream('utf8'))
+      .pipe(parse({ relax_quotes: true }))
+      .on('data', async (row) => {
+
+        index++;
+        const graveyardName = row[0]
+
+        const existingGraveyard = await findOneGraveyard({
+          name: graveyardName,
+        });
+
+        console.log('----' + index + '----', existingGraveyard)
+
+        if (existingGraveyard) {
+
+          const newGravestone = new GravestoneModel({
+            graveyardId: existingGraveyard.id,
+            churchNumber: row[1],
+            field: row[2],
+            row: row[3],
+            place: row[4],
+            name: row[5] + " " + row[6],
+            firstName: row[5],
+            lastName: row[6],
+            birthday: row[7],
+            deceasedDate: row[8],
+            ageOnDeath: row[9],
+            burriedWith: row[10],
+            peaceTo: row[11],
+            location: '',
+            picture: '',
+            content: '',
+            newsLink: '',
+            forecastLink: '',
+            approved: true,
+          });
+          await newGravestone.save({ session });
+
+          console.log('=======' + index + '========', existingGraveyard.id)
+          console.log(row);
+        }
+
+        console.log('=======' + index + '========')
+      })
+      .on('end', () => {
+        console.log(index + 'counts added');
+      });
+  } catch (error) {
+
+  }
+
+
+
+
+};
 
 export const getGravestonesByAdvancedSearch = async (
   name: any,
