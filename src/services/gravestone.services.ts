@@ -15,6 +15,7 @@ import { Gender } from '../utils/constants';
 import { DateRange } from '../types/req.type';
 import moment from 'moment';
 import { findOneGraveyard } from './graveyard.services';
+import { GraveyardModel } from '../models/graveyard.model';
 
 export const handleSeed = async (session?: ClientSession) => {
   console.log('=====Start Seed Graveyard=====');
@@ -86,6 +87,7 @@ export const getGravestonesByAdvancedSearch = async (
   session?: ClientSession
 ) => {
   let filter = {};
+
   if (
     !name &&
     !birthday.start &&
@@ -95,6 +97,7 @@ export const getGravestonesByAdvancedSearch = async (
     !graveSite
   )
     return [];
+
 
   if (name) {
     filter = { ...filter, name: new RegExp(name, 'i') };
@@ -107,7 +110,20 @@ export const getGravestonesByAdvancedSearch = async (
   // filter = { ...filter, approved: true };
   filter = { ...filter };
 
-  let gravestones = await GravestoneModel.find(filter, { _id: 0, __v: 0 }).limit(10);
+  // let gravestones = await GravestoneModel.find(filter, { _id: 0, __v: 0 }).limit(10);
+  let gravestones = await GravestoneModel.aggregate([{
+    $match: {
+      name: new RegExp(name, 'i'),
+    },
+  },
+  {
+    $lookup: {
+      from: GraveyardModel.collection.name,
+      localField: 'graveyardId',
+      foreignField: 'id',
+      as: 'graveyardDetails',
+    },
+  },])
 
   if (birthday.start || birthday.end) {
     gravestones = gravestones.filter((stone) => {
