@@ -107,7 +107,7 @@ export const getGravestonesByAdvancedSearch = async (
   // filter = { ...filter, approved: true };
   filter = { ...filter };
 
-  let gravestones = await GravestoneModel.find(filter, { _id: 0, __v: 0 });
+  let gravestones = await GravestoneModel.find(filter, { _id: 0, __v: 0 }).limit(10);
 
   if (birthday.start || birthday.end) {
     gravestones = gravestones.filter((stone) => {
