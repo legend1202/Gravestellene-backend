@@ -341,14 +341,14 @@ export const getRequestsByGraveyardId = async (
 };
 
 export const getRequestsByCompanyId = async (
-  companyId: string,
+  userId: string,
   session?: ClientSession
 ) => {
   try {
     const result = await RequestModel.aggregate([
       {
         $match: {
-          companyId,
+          fellesraadId: userId,
         },
       },
       {

@@ -222,6 +222,7 @@ export const getGraveyardById = async (
   id: string,
   session?: ClientSession
 ): Promise<Graveyard | null> => {
+
   const existingGraveyard = await findOneGraveyard({
     name: id,
   });

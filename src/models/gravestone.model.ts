@@ -7,21 +7,16 @@ export interface Gravestone extends Document {
   name: string;
   firstName: string;
   lastName: string;
-  churchNumber: string;
-  field: string;
-  row: string;
-  place: string;
-  gender: 'MAN' | 'WOMEN';
+  churchNumber?: string;
+  field?: string;
+  row?: string;
+  place?: string;
   birthday: string;
   deceasedDate: string;
   buriedDate: string;
-  ageOnDeath: string;
-  burriedWith: string;
-  peaceTo: string;
-  quarter: string;
-  graveSite: string;
-  homeTown: string;
-  graveSiteNumber: string;
+  ageOnDeath?: string;
+  burriedWith?: string;
+  peaceTo?: string;
   approved: boolean;
   createdAt: Date;
   updateAt: Date;
@@ -45,17 +40,12 @@ const GravestoneSchema = new Schema<Gravestone>(
     field: { type: String },
     row: { type: String },
     place: { type: String },
-    gender: { type: String },
     birthday: { type: String },
     deceasedDate: { type: String },
     buriedDate: { type: String },
     burriedWith: { type: String },
     ageOnDeath: { type: String },
     peaceTo: { type: String },
-    quarter: { type: String },
-    graveSite: { type: String },
-    homeTown: { type: String },
-    graveSiteNumber: { type: String },
     approved: { type: Boolean },
   },
   {

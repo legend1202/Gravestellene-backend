@@ -41,7 +41,7 @@ router.get(
 );
 
 router.get(
-  '/getRequestsByCompanyId/:companyId',
+  '/getRequestsByCompanyId',
   errorWrap(verifyToken, 'Could not verify JWT token'),
   errorWrap(getRequestsByCompany, 'Could not get services')
 );

@@ -158,9 +158,12 @@ export const getRequestsByGrave = async (req: Request, res: Response) => {
   return sendResponse(res, 200, 'Get Requests', services);
 };
 
-export const getRequestsByCompany = async (req: Request, res: Response) => {
-  const { companyId } = req.params;
-  const services = await getRequestsByCompanyId(companyId);
+export const getRequestsByCompany = async (req: Request & { userId?: DecodedToken['userId'] }, res: Response) => {
+  const userId = req.userId;
+  if (!userId) {
+    throw new RequestError('companyId is required', 400);
+  }
+  const services = await getRequestsByCompanyId(userId);
 
   return sendResponse(res, 200, 'Get Requests', services);
 };

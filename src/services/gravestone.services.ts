@@ -12,13 +12,12 @@ import { GravestoneModel, Gravestone } from '../models/gravestone.model';
 import { RequestError } from '../utils/globalErrorHandler';
 import { isValidDate } from '../utils/validate.utils';
 import { Gender } from '../utils/constants';
-import { DateRange } from '../types/req.type';
 import moment from 'moment';
 import { findOneGraveyard } from './graveyard.services';
 import { GraveyardModel } from '../models/graveyard.model';
 
 export const handleSeed = async (session?: ClientSession) => {
-  console.log('=====Start Seed Graveyard=====');
+
   let index = 0;
   try {
     const stream = fs.createReadStream('./person info1.csv')
@@ -123,7 +122,7 @@ export const getGravestonesByAdvancedSearch = async (
       foreignField: 'id',
       as: 'graveyardDetails',
     },
-  },])
+  },]).limit(10)
 
   if (birthday.start || birthday.end) {
     gravestones = gravestones.filter((stone) => {
@@ -178,25 +177,14 @@ export const handleGravestoneCreation = async (
   const {
     graveyardId,
     name,
-    gender,
     birthday,
     deceasedDate,
     buriedDate,
-    quarter,
-    graveSite,
-    homeTown,
-    graveSiteNumber,
   } = gravestone;
 
   if (!graveyardId) throw new RequestError('Invalid fields. graveyardId', 400);
   if (!name) throw new RequestError('Invalid fields. name', 400);
-  if (!gender) throw new RequestError('Invalid fields. gender', 400);
-  if (!Gender.includes(gender)) {
-    throw new RequestError(
-      `Gender must be include one of "MAN", "WOMEN".`,
-      400
-    );
-  }
+
   if (!isValidDate(birthday) || !birthday)
     throw new RequestError(
       'Invalid fields. birthday type should be DD/MM/YYYY',
@@ -212,15 +200,9 @@ export const handleGravestoneCreation = async (
       'Invalid fields. buriedDate type should be DD/MM/YYYY',
       400
     );
-  if (!quarter) throw new RequestError('Invalid fields. quarter', 400);
-  if (!graveSite) throw new RequestError('Invalid fields. graveSite', 400);
-  if (!homeTown) throw new RequestError('Invalid fields. homeTown', 400);
-  if (!graveSiteNumber)
-    throw new RequestError('Invalid fields. graveSiteNumber', 400);
 
   const existingGravestone = await findOneGravestone({
     name,
-    gender,
     birthday,
     deceasedDate,
     buriedDate,
@@ -231,16 +213,7 @@ export const handleGravestoneCreation = async (
   }
 
   const newGravestone = await createNewGravestone(
-    graveyardId,
-    name,
-    gender,
-    birthday,
-    deceasedDate,
-    buriedDate,
-    quarter,
-    graveSite,
-    homeTown,
-    graveSiteNumber,
+    gravestone,
     session
   );
 
@@ -318,29 +291,11 @@ export async function findOneGravestone(
 }
 
 export const createNewGravestone = async (
-  graveyardId: string,
-  name: string,
-  gender: string,
-  birthday: string,
-  deceasedDate: string,
-  buriedDate: string,
-  quarter: string,
-  graveSite: string,
-  homeTown: string,
-  graveSiteNumber: string,
+  gravestone: Partial<Gravestone> & Document,
   session?: ClientSession
 ): Promise<Gravestone> => {
   const newGravestone = new GravestoneModel({
-    graveyardId,
-    name,
-    gender,
-    birthday,
-    deceasedDate,
-    buriedDate,
-    quarter,
-    graveSite,
-    homeTown,
-    graveSiteNumber,
+    ...gravestone,
     approved: false,
   });
 
